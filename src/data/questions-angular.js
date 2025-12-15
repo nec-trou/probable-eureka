@@ -66,8 +66,18 @@ export const pool1 = [
     question: 'Расскажи про случай, когда тебе пришлось разбираться ' +
       'почему код ведёт себя по-разному в setTimeout и в Promise. ' +
       'Что там происходило?',
+    altQuestions: [
+      'Бывало такое — ставишь console.log в промисе и в таймауте, а они ' +
+        'выводятся не в том порядке как написаны. Сталкивался? Почему так?',
+      'Если я завернут один код в Promise.resolve().then(), а другой в ' +
+        'setTimeout(..., 0) — какой раньше? И главное — почему именно так?'
+    ],
     followUp: 'А если добавить туда ещё requestAnimationFrame — ' +
       'в каком порядке всё выполнится?',
+    altFollowUps: [
+      'Окей, а теперь добавь в эту цепочку rAF. Где он окажется?',
+      'А requestAnimationFrame — это ближе к промисам или к таймаутам по приоритету?'
+    ],
     expectedAnswer: 'Микротаски (Promise) выполняются до макротасок ' +
       '(setTimeout). rAF — перед следующим paint, после микротасок.',
     
@@ -103,7 +113,17 @@ export const pool1 = [
     section: 'javascript',
     question: 'Была ли ситуация, когда this внутри колбэка оказывался ' +
       'не тем, что ты ожидал? Как решал?',
+    altQuestions: [
+      'Вот ты передаёшь метод класса куда-то как колбэк — и бах, this уже не твой объект. ' +
+        'Знакомая история? Как обычно это чинишь?',
+      'Почему иногда приходится писать .bind(this) или сохранять this в переменную? ' +
+        'Когда это нужно и когда нет?'
+    ],
     followUp: 'А если колбэк — arrow function, что изменится?',
+    altFollowUps: [
+      'Окей, а стрелочная функция в этой ситуации — спасёт? Почему?',
+      'Чем принципиально стрелочные функции отличаются от обычных в плане this?'
+    ],
     expectedAnswer: 'Arrow function берёт this из места определения ' +
       '(лексический), обычная функция — из места вызова.',
     
@@ -137,7 +157,16 @@ export const pool1 = [
     section: 'javascript',
     question: 'Использовал WeakMap или WeakSet на практике? ' +
       'Для чего они вообще нужны?',
+    altQuestions: [
+      'Бывало что нужно привязать данные к объекту, но так чтобы это не мешало ' +
+        'сборщику мусора? Какую структуру данных использовал бы?',
+      'Чем WeakMap отличается от обычного Map — и когда выбрал бы именно его?'
+    ],
     followUp: 'Почему нельзя итерировать WeakMap?',
+    altFollowUps: [
+      'А можно как-то узнать размер WeakMap или пройтись по его ключам?',
+      'Почему нет .keys() и .forEach() у WeakMap?'
+    ],
     expectedAnswer: 'Слабые ссылки на ключи, не мешают GC. ' +
       'Кейсы: кеширование, приватные данные.',
     
@@ -174,7 +203,16 @@ export const pool1 = [
     section: 'typescript',
     question: 'Приходилось ли типизировать функцию, которая принимает ' +
       'объект и возвращает часть его полей? Как это делал?',
+    altQuestions: [
+      'Вот тебе нужна функция pick(obj, keys) — как бы ты её затипизировал ' +
+        'чтобы результат содержал только выбранные поля?',
+      'Знаешь такие штуки как Pick, Omit? Как бы написал дженерик-функцию с ними?'
+    ],
     followUp: 'А как сделать чтобы ключи были автокомплитом?',
+    altFollowUps: [
+      'Как сделать чтобы IDE подсказывала какие ключи можно передать?',
+      'Можно ли ограничить второй аргумент только реальными ключами объекта?'
+    ],
     expectedAnswer: 'Pick<T, K>, keyof, дженерики. ' +
       'function pick<T, K extends keyof T>...',
     
@@ -208,7 +246,16 @@ export const pool1 = [
     section: 'typescript',
     question: 'Сталкивался с ситуацией когда нужно было "вытащить" ' +
       'тип из другого типа? Например, тип аргумента функции?',
+    altQuestions: [
+      'Есть функция — как получить тип того что она возвращает, ' +
+        'не дублируя описание типа руками?',
+      'Слышал про infer? Когда его используют и для чего?'
+    ],
     followUp: 'Как бы ты типизировал функцию unwrapPromise?',
+    altFollowUps: [
+      'Как из Promise<User> получить просто User на уровне типов?',
+      'Знаешь Awaited<T>? Как бы сам написал такой тип?'
+    ],
     expectedAnswer: 'infer в conditional types. Parameters<T>, ReturnType<T>.',
     
     interviewerNotes: {
@@ -242,7 +289,16 @@ export const pool1 = [
     section: 'rxjs',
     question: 'Был случай когда делал поиск с автокомплитом и ответы ' +
       'приходили в неправильном порядке? Как решал?',
+    altQuestions: [
+      'Вот юзер быстро печатает — а запросы возвращаются вразнобой. ' +
+        'Старый ответ приходит последним и затирает новый. Как чинить?',
+      'Какой RxJS оператор гарантирует что мы получим ответ именно на последний запрос?'
+    ],
     followUp: 'А если нужно показывать loading spinner?',
+    altFollowUps: [
+      'Как понять что запрос в процессе — чтобы показать лоадер?',
+      'Можно ли отслеживать состояние loading через RxJS?'
+    ],
     expectedAnswer: 'switchMap отменяет предыдущие запросы. ' +
       'debounceTime перед запросом. distinctUntilChanged.',
     
@@ -276,7 +332,16 @@ export const pool1 = [
     section: 'rxjs',
     question: 'Как ты обычно решаешь проблему утечек памяти ' +
       'с подписками в Angular?',
+    altQuestions: [
+      'Подписался в компоненте, компонент уничтожился — а подписка висит. ' +
+        'Как с этим справляешься?',
+      'Какие паттерны отписки используешь? takeUntil, async pipe, что-то ещё?'
+    ],
     followUp: 'А если нужно подписаться только один раз?',
+    altFollowUps: [
+      'Вот тебе нужен только первый emit — как подписаться и сразу отписаться?',
+      'Чем take(1) отличается от first()? Когда какой?'
+    ],
     expectedAnswer: 'takeUntil + destroy$, async pipe, take(1). ' +
       'В новых версиях: takeUntilDestroyed().',
     
@@ -312,7 +377,17 @@ export const pool1 = [
     section: 'angular',
     question: 'Была ситуация когда компонент не обновлялся хотя данные ' +
       'изменились? Как дебажил, что оказалось причиной?',
+    altQuestions: [
+      'Меняешь поле в объекте — а шаблон не перерисовывается. ' +
+        'С таким сталкивался? Что там было не так?',
+      'Когда Angular вообще решает что пора обновить компонент? ' +
+        'Что может это сломать?'
+    ],
     followUp: 'А если это OnPush компонент — что могло быть?',
+    altFollowUps: [
+      'При OnPush — когда именно компонент обновится? Что триггерит проверку?',
+      'Мутация массива — триггернёт OnPush или нет? Почему?'
+    ],
     expectedAnswer: 'OnPush: мутация объекта без смены ссылки, ' +
       'изменение вне Angular zone.',
     
@@ -347,7 +422,15 @@ export const pool1 = [
     section: 'angular',
     question: 'Работал с Signals в Angular? Чем они отличаются ' +
       'от BehaviorSubject для состояния?',
+    altQuestions: [
+      'Когда выбрал бы signal(), а когда BehaviorSubject? В чём разница для тебя?',
+      'Signals — это ведь тоже реактивность. Чем они принципиально отличаются от RxJS?'
+    ],
     followUp: 'А computed signal — он eager или lazy?',
+    altFollowUps: [
+      'computed пересчитывается при каждом изменении зависимости или только когда читают?',
+      'Если никто не читает computed — он всё равно пересчитается?'
+    ],
     expectedAnswer: 'Signals — синхронные, проще API. ' +
       'computed лениво вычисляется только при чтении.',
     
@@ -381,7 +464,16 @@ export const pool1 = [
     id: 'p1-ng-3',
     section: 'angular',
     question: 'Объясни как устроена иерархия инжекторов в Angular.',
+    altQuestions: [
+      'Вот ты запрашиваешь сервис в компоненте — откуда Angular его возьмёт? ' +
+        'Как работает цепочка поиска?',
+      'Может ли один и тот же сервис иметь разные инстансы в разных местах приложения?'
+    ],
     followUp: 'Что будет если lazy-loaded модуль предоставит тот же сервис?',
+    altFollowUps: [
+      'Lazy module — у него свой инжектор? К чему это может привести?',
+      'Как сделать чтобы сервис был гарантированно один на всё приложение?'
+    ],
     expectedAnswer: 'Root → Module → Component. Lazy module — свой инжектор, ' +
       'свой инстанс сервиса.',
     
@@ -417,7 +509,15 @@ export const pool1 = [
     section: 'architecture',
     question: 'Расскажи про ситуацию когда компонент стал слишком ' +
       '"толстым". Как рефакторил?',
+    altQuestions: [
+      'Был компонент на 500 строк — как бы ты его разбил? По какому принципу?',
+      'Когда понимаешь что компонент пора рефакторить? По каким признакам?'
+    ],
     followUp: 'По какому принципу решал что выносить?',
+    altFollowUps: [
+      'Single Responsibility — как ты его понимаешь в контексте Angular?',
+      'Что остаётся в компоненте, а что уходит в сервисы?'
+    ],
     expectedAnswer: 'Выделение сервисов, фасадов. Single Responsibility.',
     
     interviewerNotes: {
@@ -450,7 +550,15 @@ export const pool1 = [
     section: 'architecture',
     question: 'Как организуешь состояние в Angular приложении? ' +
       'Когда нужен NgRx?',
+    altQuestions: [
+      'NgRx — когда его использовал? Или обходился без него?',
+      'Есть проект — как решаешь нужен ли стор типа NgRx или хватит сервисов?'
+    ],
     followUp: 'А когда хватает сервисов с BehaviorSubject?',
+    altFollowUps: [
+      'Сервис с Subject — это же тоже стейт менеджмент? Когда его достаточно?',
+      'Какие признаки что проекту нужен полноценный Redux-like стор?'
+    ],
     expectedAnswer: 'Сервисы — для простого состояния. NgRx — много shared state, ' +
       'сложные flows.',
     
@@ -487,7 +595,15 @@ export const pool1 = [
     section: 'signals',
     question: 'Работал с Signals в Angular? Чем они отличаются ' +
       'от RxJS для состояния?',
+    altQuestions: [
+      'signal() vs BehaviorSubject — в чём разница для тебя? Когда что?',
+      'Зачем Angular добавил Signals если уже есть RxJS?'
+    ],
     followUp: 'computed signal — он eager или lazy?',
+    altFollowUps: [
+      'computed пересчитывается сразу при изменении или только когда читают?',
+      'Если computed никто не читает — будет пересчитываться при изменении зависимостей?'
+    ],
     expectedAnswer: 'Signals синхронные, проще API. computed лениво ' +
       'вычисляется только при чтении.',
     
@@ -519,7 +635,15 @@ export const pool1 = [
     id: 'p1-sig-2',
     section: 'signals',
     question: 'Как бы ты мигрировал компонент с BehaviorSubject на Signals?',
+    altQuestions: [
+      'Есть сервис на BehaviorSubject — как постепенно перевести на Signals?',
+      'Можно ли использовать Signals и RxJS вместе? Как они связываются?'
+    ],
     followUp: 'toSignal() и toObservable() — для чего?',
+    altFollowUps: [
+      'Как превратить Observable в Signal и наоборот?',
+      'toSignal — когда он полезен? Какие нюансы?'
+    ],
     expectedAnswer: 'signal() вместо BehaviorSubject, computed вместо pipe. ' +
       'toSignal/toObservable для интеропа.',
     
@@ -549,7 +673,15 @@ export const pool1 = [
     section: 'browser',
     question: 'Был опыт оптимизации производительности фронтенда? ' +
       'Как искал проблемы?',
+    altQuestions: [
+      'Сайт тормозит — как ищешь причину? Какие инструменты?',
+      'Lighthouse показывает плохой performance — что делаешь дальше?'
+    ],
     followUp: 'Core Web Vitals — какие метрики?',
+    altFollowUps: [
+      'LCP, CLS, INP — что это и какие хорошие значения?',
+      'Google смотрит на какие-то конкретные метрики для ранжирования — какие?'
+    ],
     expectedAnswer: 'DevTools Performance, Lighthouse. LCP, CLS, INP.',
     
     interviewerNotes: {
@@ -581,7 +713,15 @@ export const pool1 = [
     id: 'p1-br-2',
     section: 'browser',
     question: 'Сталкивался с CORS ошибками? Как решал?',
+    altQuestions: [
+      'Запрос на другой домен падает с ошибкой — что проверяешь? Где чинить?',
+      'CORS — это защита на стороне браузера или сервера? Как оно работает?'
+    ],
     followUp: 'Preflight запрос — когда он происходит?',
+    altFollowUps: [
+      'Почему иногда перед запросом летит OPTIONS? Что это такое?',
+      'Simple request vs non-simple — в чём разница для CORS?'
+    ],
     expectedAnswer: 'CORS — защита браузера, решается на бэке. ' +
       'Preflight для non-simple requests.',
     
@@ -620,7 +760,15 @@ export const pool2 = [
     id: 'p2-js-1',
     section: 'javascript',
     question: 'Приходилось ли работать с прототипами напрямую?',
+    altQuestions: [
+      'Когда-нибудь лез в __proto__ или Object.create()? Зачем?',
+      'Классы в JS — это ведь синтаксический сахар. Над чем именно?'
+    ],
     followUp: 'Чем __proto__ отличается от prototype?',
+    altFollowUps: [
+      'У объекта есть prototype? Или это свойство только функций?',
+      'Когда создаёшь объект через new — откуда берётся его __proto__?'
+    ],
     expectedAnswer: 'prototype — свойство функций-конструкторов, ' +
       '__proto__ — ссылка на прототип у объекта.',
     interviewerNotes: {
@@ -636,7 +784,15 @@ export const pool2 = [
     id: 'p2-js-2',
     section: 'javascript',
     question: 'Был опыт работы с генераторами? Для чего использовал?',
+    altQuestions: [
+      'function* — использовал когда-нибудь? Для каких задач?',
+      'Ленивые вычисления в JS — как их делают? Что используют?'
+    ],
     followUp: 'Async generators — как связаны с обычными?',
+    altFollowUps: [
+      'async function* — это что? Когда полезно?',
+      'yield и await — можно вместе? Как это работает?'
+    ],
     expectedAnswer: 'Ленивые вычисления, потоки данных. async generator — yield промисов.',
     interviewerNotes: {
       whyAsking: 'Показывает знание продвинутых фич JS.',
@@ -651,7 +807,15 @@ export const pool2 = [
     id: 'p2-ts-1',
     section: 'typescript',
     question: 'Как типизируешь объект с динамическими ключами?',
+    altQuestions: [
+      'Нужен словарь userId → userData. Как типизируешь?',
+      'Index signature и Record — в чём разница? Когда какой?'
+    ],
     followUp: 'Record vs index signature — когда что?',
+    altFollowUps: [
+      'Record<string, T> строже чем [key: string]: T? В чём?',
+      'Когда Record лучше — когда ключи известны или неизвестны?'
+    ],
     expectedAnswer: 'Record<string, T> или { [key: string]: T }. Record строже.',
     interviewerNotes: {
       whyAsking: 'Частая задача — типизация словарей и маппингов.',
@@ -667,7 +831,15 @@ export const pool2 = [
     id: 'p2-rxjs-1',
     section: 'rxjs',
     question: 'Чем отличается Subject от BehaviorSubject от ReplaySubject?',
+    altQuestions: [
+      'Subject-ы в RxJS — какие есть и когда какой используешь?',
+      'BehaviorSubject требует начальное значение — почему? А Subject нет?'
+    ],
     followUp: 'А AsyncSubject?',
+    altFollowUps: [
+      'AsyncSubject — экзотика. Когда он нужен?',
+      'Что получит подписчик AsyncSubject если ещё не complete?'
+    ],
     expectedAnswer: 'Subject — без буфера, Behavior — последнее, Replay — N последних.',
     interviewerNotes: {
       whyAsking: 'Базовое знание Subject-ов — ежедневная работа в Angular.',
@@ -684,7 +856,15 @@ export const pool2 = [
     id: 'p2-ng-1',
     section: 'angular',
     question: 'Как устроен Change Detection в Angular?',
+    altQuestions: [
+      'Что триггерит change detection? Откуда Angular знает что пора проверить?',
+      'Zone.js — для чего он Angular-у? Как связан с обновлением UI?'
+    ],
     followUp: 'Как NgZone связан с CD?',
+    altFollowUps: [
+      'runOutsideAngular — когда используешь? Что это даёт?',
+      'Как выполнить код без триггера CD?'
+    ],
     expectedAnswer: 'Zone.js патчит async APIs. CD проверяет дерево. runOutsideAngular — отключить.',
     interviewerNotes: {
       whyAsking: 'CD — основа работы Angular. Важно для оптимизации.',
@@ -701,7 +881,15 @@ export const pool2 = [
     id: 'p2-ng-2',
     section: 'angular',
     question: 'Работал со standalone компонентами?',
+    altQuestions: [
+      'Standalone: true — пробовал? Чем отличается от обычных компонентов?',
+      'Можно ли в Angular без NgModule вообще? Как?'
+    ],
     followUp: 'Как делаешь lazy loading со standalone?',
+    altFollowUps: [
+      'loadComponent в routes — это что? Как работает?',
+      'Lazy loading без модуля — как это сделать?'
+    ],
     expectedAnswer: 'Не нужен NgModule. loadComponent в routes.',
     interviewerNotes: {
       whyAsking: 'Standalone — будущее Angular. Проверяем знание современных практик.',
@@ -716,7 +904,15 @@ export const pool2 = [
     id: 'p2-arch-1',
     section: 'architecture',
     question: 'Использовал паттерн "умный/глупый" компонент?',
+    altQuestions: [
+      'Container vs Presentational компоненты — применял? Как разделяешь?',
+      'Где у тебя живёт логика — в компонентах или в сервисах?'
+    ],
     followUp: 'А где живёт бизнес-логика?',
+    altFollowUps: [
+      'Компонент должен знать откуда данные? Или только отображать?',
+      'Как бы разделил компонент который и данные тянет и отображает?'
+    ],
     expectedAnswer: 'Container: данные. Presentational: отображение. Логика в сервисах.',
     interviewerNotes: {
       whyAsking: 'Базовый архитектурный паттерн для React/Angular.',
@@ -732,7 +928,15 @@ export const pool2 = [
     id: 'p2-sig-1',
     section: 'signals',
     question: 'effect() в Signals — для чего и какие ограничения?',
+    altQuestions: [
+      'effect() — это как subscribe? В чём разница?',
+      'Где используешь effect()? Какие ограничения есть?'
+    ],
     followUp: 'Почему нельзя менять сигналы внутри effect без allowSignalWrites?',
+    altFollowUps: [
+      'Если в effect изменить сигнал — что будет? Почему запрещено?',
+      'allowSignalWrites: true — когда нужен? Какие риски?'
+    ],
     expectedAnswer: 'effect для side effects. По умолчанию read-only ' +
       'чтобы избежать бесконечных циклов.',
     interviewerNotes: {
@@ -749,7 +953,15 @@ export const pool2 = [
     id: 'p2-br-1',
     section: 'browser',
     question: 'Работал с Web Workers?',
+    altQuestions: [
+      'Как вынести тяжёлые вычисления чтобы не блокировать UI?',
+      'Worker-ы — использовал? Для чего? Какие ограничения?'
+    ],
     followUp: 'Как передаёшь данные между worker и main thread?',
+    altFollowUps: [
+      'postMessage — что можно передавать? Что нельзя?',
+      'Worker имеет доступ к DOM? Почему?'
+    ],
     expectedAnswer: 'Тяжёлые вычисления. postMessage/onmessage.',
     interviewerNotes: {
       whyAsking: 'Workers — способ не блокировать main thread.',
@@ -771,7 +983,15 @@ export const pool3 = [
     id: 'p3-js-1',
     section: 'javascript',
     question: 'Приходилось глубоко копировать объекты? Подводные камни?',
+    altQuestions: [
+      'Spread и Object.assign — это глубокая копия? А как сделать глубокую?',
+      'JSON.parse(JSON.stringify(obj)) — годится для deep clone? Какие проблемы?'
+    ],
     followUp: 'structuredClone — слышал?',
+    altFollowUps: [
+      'Есть нативный способ глубокого копирования в JS? Какие ограничения?',
+      'Что не скопирует structuredClone?'
+    ],
     expectedAnswer: 'JSON теряет функции/даты. structuredClone — нативный.',
     interviewerNotes: {
       whyAsking: 'Частая задача. Проверяем знание ограничений разных подходов.',
@@ -787,7 +1007,15 @@ export const pool3 = [
     id: 'p3-ts-1',
     section: 'typescript',
     question: 'Использовал generic constraints? Для чего?',
+    altQuestions: [
+      'T extends Something — для чего так пишут? Когда нужно?',
+      'Как ограничить тип-параметр дженерика определённым интерфейсом?'
+    ],
     followUp: 'T extends keyof — что это даёт?',
+    altFollowUps: [
+      'keyof в дженериках — что даёт на практике?',
+      'Как сделать чтобы IDE подсказывала ключи объекта в параметре?'
+    ],
     expectedAnswer: 'Ограничение типа параметра. keyof — ключи объекта.',
     interviewerNotes: {
       whyAsking: 'Generics с constraints — признак понимания системы типов.',
@@ -803,7 +1031,15 @@ export const pool3 = [
     id: 'p3-arch-1',
     section: 'architecture',
     question: 'Как организуешь shared модули в Angular?',
+    altQuestions: [
+      'Есть компонент Button — куда его класть? В какой модуль?',
+      'Shared и Core модули — чем отличаются? Что где живёт?'
+    ],
     followUp: 'Что кладёшь в shared vs core?',
+    altFollowUps: [
+      'AuthService — shared или core? Почему?',
+      'Core модуль импортируется один раз — зачем такое ограничение?'
+    ],
     expectedAnswer: 'Shared: переиспользуемые компоненты. Core: синглтоны, guards.',
     interviewerNotes: {
       whyAsking: 'Организация кода — важный навык для больших проектов.',
@@ -819,7 +1055,15 @@ export const pool3 = [
     id: 'p3-rxjs-1',
     section: 'rxjs',
     question: 'Как обрабатываешь ошибки в RxJS потоках?',
+    altQuestions: [
+      'HTTP запрос упал — как перехватить ошибку в RxJS?',
+      'catchError — как работает? Что возвращать?'
+    ],
     followUp: 'Как сделать чтобы поток продолжил после ошибки?',
+    altFollowUps: [
+      'После ошибки observable завершается. Как этого избежать?',
+      'Ошибка в switchMap не должна убивать весь поток — как сделать?'
+    ],
     expectedAnswer: 'catchError — перехват. После ошибки поток завершается.',
     interviewerNotes: {
       whyAsking: 'Ошибки в потоках — частый источник багов.',
@@ -835,7 +1079,15 @@ export const pool3 = [
     id: 'p3-ng-1',
     section: 'angular',
     question: 'Писал кастомные директивы? Пример?',
+    altQuestions: [
+      'Когда нужна директива а не компонент? В чём разница?',
+      'Приведи пример когда бы написал директиву — какую задачу решал?'
+    ],
     followUp: 'Structural vs Attribute — в чём разница?',
+    altFollowUps: [
+      '*ngIf — это какой тип директивы? Почему со звёздочкой?',
+      'Structural директива работает с DOM напрямую? Как?'
+    ],
     expectedAnswer: 'Attribute: модифицирует элемент. Structural: меняет DOM.',
     interviewerNotes: {
       whyAsking: 'Директивы — мощный инструмент переиспользования.',
@@ -851,7 +1103,15 @@ export const pool3 = [
     id: 'p3-sig-1',
     section: 'signals',
     question: 'Signal-based inputs в Angular — пробовал?',
+    altQuestions: [
+      'input() вместо @Input() — слышал? Чем лучше?',
+      'Как отслеживать изменения @Input без ngOnChanges?'
+    ],
     followUp: 'Чем input() отличается от @Input()?',
+    altFollowUps: [
+      'input() возвращает что? Как с ним работать?',
+      'input.required() — для чего? Как использовать?'
+    ],
     expectedAnswer: 'input() возвращает signal. Не нужен ngOnChanges.',
     interviewerNotes: {
       whyAsking: 'Новый API в Angular 17.1+.',
@@ -867,7 +1127,15 @@ export const pool3 = [
     id: 'p3-br-1',
     section: 'browser',
     question: 'localStorage vs sessionStorage vs cookies?',
+    altQuestions: [
+      'Куда сохранить токен? Какие варианты и какие риски?',
+      'Три способа хранить данные в браузере — чем отличаются?'
+    ],
     followUp: 'Какие риски по безопасности?',
+    altFollowUps: [
+      'XSS и localStorage — в чём связь? Как защититься?',
+      'httpOnly cookie — что это? От чего защищает?'
+    ],
     expectedAnswer: 'localStorage постоянно. sessionStorage на сессию. Cookies для сервера.',
     interviewerNotes: {
       whyAsking: 'Базовое знание хранения данных в браузере.',
@@ -886,7 +1154,15 @@ export const pool4 = [
     id: 'p4-js-1',
     section: 'javascript',
     question: 'Promise.all — подводные камни?',
+    altQuestions: [
+      'Запускаешь 5 промисов через Promise.all — один упал. Что будет с остальными?',
+      'Fail fast поведение Promise.all — когда это проблема?'
+    ],
     followUp: 'Promise.allSettled — когда нужен?',
+    altFollowUps: [
+      'Как дождаться всех промисов даже если часть упала?',
+      'Promise.allSettled — что возвращает? Какая структура?'
+    ],
     expectedAnswer: 'Promise.all fails fast. allSettled — ждёт все.',
     interviewerNotes: {
       whyAsking: 'Параллельные операции — частая задача.',
@@ -902,7 +1178,15 @@ export const pool4 = [
     id: 'p4-ts-1',
     section: 'typescript',
     question: 'Discriminated unions — использовал?',
+    altQuestions: [
+      'type Success | Error — как TS понимает какой из них в данный момент?',
+      'Tagged unions — слышал? Для чего это нужно?'
+    ],
     followUp: 'Как TypeScript сужает тип в switch?',
+    altFollowUps: [
+      'switch по status: "ok" | "error" — TS понимает тип внутри case?',
+      'Type narrowing в switch — как это работает?'
+    ],
     expectedAnswer: 'Общее поле-дискриминант. TS сужает тип по значению.',
     interviewerNotes: {
       whyAsking: 'Мощный паттерн для работы с вариантами.',
@@ -917,7 +1201,15 @@ export const pool4 = [
     id: 'p4-arch-1',
     section: 'architecture',
     question: 'Facade pattern в Angular — использовал?',
+    altQuestions: [
+      'Компонент инжектит 5 сервисов — как упростить?',
+      'Facade — это ещё один сервис? В чём отличие?'
+    ],
     followUp: 'Зачем нужен если есть сервисы?',
+    altFollowUps: [
+      'Как Facade улучшает тестируемость?',
+      'Что Facade скрывает от компонента?'
+    ],
     expectedAnswer: 'Скрывает сложность. Единый API для компонента.',
     interviewerNotes: {
       whyAsking: 'Facade упрощает компоненты и улучшает тестируемость.',
@@ -934,7 +1226,15 @@ export const pool4 = [
     id: 'p4-ng-1',
     section: 'angular',
     question: 'ControlValueAccessor — что это?',
+    altQuestions: [
+      'Как сделать свой компонент совместимым с formControlName?',
+      'Кастомный input для формы — как интегрировать с Reactive Forms?'
+    ],
     followUp: 'writeValue, registerOnChange — что делают?',
+    altFollowUps: [
+      'writeValue вызывается когда? Что в нём делаешь?',
+      'Как уведомить форму что значение изменилось внутри компонента?'
+    ],
     expectedAnswer: 'Интерфейс для кастомных form controls.',
     interviewerNotes: {
       whyAsking: 'Продвинутая работа с формами.',
@@ -950,7 +1250,15 @@ export const pool4 = [
     id: 'p4-rxjs-1',
     section: 'rxjs',
     question: 'Higher-Order Observables — что это?',
+    altQuestions: [
+      'Observable внутри Observable — когда такое получается?',
+      'map возвращает Observable — что делать с вложенностью?'
+    ],
     followUp: 'Как "уплощаешь" вложенные Observable?',
+    altFollowUps: [
+      'mergeMap, switchMap, concatMap — в чём разница?',
+      'Flattening operators — какие знаешь и когда какой?'
+    ],
     expectedAnswer: 'Observable<Observable<T>>. Уплощение: mergeMap, switchMap, concatMap.',
     interviewerNotes: {
       whyAsking: 'Понимание вложенных потоков — ключ к RxJS.',
@@ -966,7 +1274,15 @@ export const pool4 = [
     id: 'p4-sig-1',
     section: 'signals',
     question: 'linkedSignal — слышал про такой? Для чего?',
+    altQuestions: [
+      'Есть computed — но что если нужно и читать и перезаписывать?',
+      'Writable computed — такое возможно в Signals?'
+    ],
     followUp: 'Чем отличается от computed?',
+    altFollowUps: [
+      'computed read-only — а linkedSignal?',
+      'Когда linkedSignal сбрасывается к вычисленному значению?'
+    ],
     expectedAnswer: 'linkedSignal — writable computed. Можно и читать и писать.',
     interviewerNotes: {
       whyAsking: 'Новый API в Angular 19. Показывает знание актуальных фич.',
@@ -983,7 +1299,15 @@ export const pool4 = [
     id: 'p4-br-1',
     section: 'browser',
     question: 'Intersection Observer — использовал?',
+    altQuestions: [
+      'Как узнать что элемент появился в viewport? Без scroll события?',
+      'Lazy load картинок — как реализуешь? Какой API?'
+    ],
     followUp: 'Как реализовать infinite scroll?',
+    altFollowUps: [
+      'Sentinel элемент — что это? Как работает с IO?',
+      'Почему IO лучше scroll event для infinite scroll?'
+    ],
     expectedAnswer: 'Отслеживание видимости. Sentinel элемент в конце.',
     interviewerNotes: {
       whyAsking: 'Современный API, лучше scroll events для lazy loading.',
