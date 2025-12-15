@@ -78,29 +78,62 @@
             </div>
           </div>
 
-          <!-- Hints (bottom) -->
-          <div class="hints-section">
-            <div class="panel__header">
-              <span>💡 ПОДСКАЗКИ</span>
-            </div>
-            <div class="hints-list">
-              <div 
-                v-for="(hint, idx) in currentTask?.hints || []" 
-                :key="idx"
-                class="hint-item"
-                :class="{ revealed: revealedHints.includes(idx) }"
+          <!-- Tabs for Hints/Questions -->
+          <div class="tabs-section">
+            <div class="tabs-header">
+              <button 
+                class="tab-btn" 
+                :class="{ active: rightTab === 'hints' }"
+                @click="rightTab = 'hints'"
               >
-                <button 
-                  class="hint-btn"
-                  @click="revealHint(idx)"
+                💡 Подсказки
+              </button>
+              <button 
+                class="tab-btn" 
+                :class="{ active: rightTab === 'questions' }"
+                @click="rightTab = 'questions'"
+              >
+                🤔 Контр-вопросы
+              </button>
+            </div>
+            
+            <!-- Hints Tab -->
+            <div v-if="rightTab === 'hints'" class="tab-content">
+              <div class="hints-list">
+                <div 
+                  v-for="(hint, idx) in currentTask?.hints || []" 
+                  :key="idx"
+                  class="hint-item"
+                  :class="{ revealed: revealedHints.includes(idx) }"
                 >
-                  <span class="hint-level">Уровень {{ hint.level }}</span>
-                  <span v-if="!revealedHints.includes(idx)">
-                    Нажми чтобы показать
-                  </span>
-                </button>
-                <div v-if="revealedHints.includes(idx)" class="hint-text">
-                  {{ hint.text }}
+                  <button 
+                    class="hint-btn"
+                    @click="revealHint(idx)"
+                  >
+                    <span class="hint-level">{{ hint.level }}</span>
+                    <span v-if="revealedHints.includes(idx)" class="hint-text-inline">
+                      {{ hint.text }}
+                    </span>
+                    <span v-else class="hint-hidden">👆 клик</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Questions Tab -->
+            <div v-if="rightTab === 'questions'" class="tab-content">
+              <div class="critical-questions">
+                <div 
+                  v-for="(item, idx) in currentTask?.criticalQuestions || []" 
+                  :key="'q-' + idx"
+                  class="critical-question"
+                  :class="{ expanded: expandedQuestions.includes(idx) }"
+                  @click="toggleQuestion(idx)"
+                >
+                  <div class="cq-question">{{ item.q }}</div>
+                  <div v-if="expandedQuestions.includes(idx)" class="cq-answer">
+                    ✅ {{ item.a }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -108,42 +141,42 @@
         </div>
       </div>
 
-      <!-- Bottom: Evaluation -->
+      <!-- Bottom: Evaluation with Scroll -->
       <div class="evaluation-bar">
-        <div class="eval-section">
-          <span class="eval-label">✓ Ожидаемое:</span>
-          <div class="eval-items">
+        <div class="eval-column">
+          <span class="eval-label">✓ Ожидаемое поведение:</span>
+          <div class="eval-list">
             <label 
               v-for="(item, idx) in currentTask?.expectedBehavior || []" 
               :key="'exp-' + idx"
-              class="pixel-checkbox"
+              class="eval-checkbox"
             >
               <input 
                 type="checkbox" 
                 :checked="checkedExpected.includes(idx)"
                 @change="toggleExpected(idx)"
               />
-              <span class="pixel-checkbox__box"></span>
-              <span class="pixel-checkbox__label">{{ item }}</span>
+              <span class="checkbox-icon">{{ checkedExpected.includes(idx) ? '✓' : '○' }}</span>
+              <span class="checkbox-label">{{ item }}</span>
             </label>
           </div>
         </div>
 
-        <div class="eval-section eval-section--red">
+        <div class="eval-column eval-column--red">
           <span class="eval-label">🚩 Red Flags:</span>
-          <div class="eval-items">
+          <div class="eval-list">
             <label 
               v-for="(item, idx) in currentTask?.redFlags || []" 
               :key="'red-' + idx"
-              class="pixel-checkbox pixel-checkbox--red"
+              class="eval-checkbox eval-checkbox--red"
             >
               <input 
                 type="checkbox" 
                 :checked="checkedRedFlags.includes(idx)"
                 @change="toggleRedFlag(idx)"
               />
-              <span class="pixel-checkbox__box"></span>
-              <span class="pixel-checkbox__label">{{ item }}</span>
+              <span class="checkbox-icon">{{ checkedRedFlags.includes(idx) ? '✗' : '○' }}</span>
+              <span class="checkbox-label">{{ item }}</span>
             </label>
           </div>
         </div>
@@ -211,15 +244,41 @@ import { livecodingTasks } from '../data/livecoding-tasks'
 const router = useRouter()
 const store = useInterviewStore()
 
-// Берём только нужное количество задач
+// Функция для перемешивания с seed (как в store)
+function mulberry32(seed) {
+  return function() {
+    let t = seed += 0x6D2B79F5
+    t = Math.imul(t ^ t >>> 15, t | 1)
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61)
+    return ((t ^ t >>> 14) >>> 0) / 4294967296
+  }
+}
+
+function shuffleWithSeed(array, seed) {
+  const result = [...array]
+  const random = mulberry32(seed)
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1))
+    ;[result[i], result[j]] = [result[j], result[i]]
+  }
+  return result
+}
+
+// Берём рандомные задачи на основе seed
 const allTasks = livecodingTasks || []
-const tasks = computed(() => allTasks.slice(0, store.liveCodingCount))
+const tasks = computed(() => {
+  const seed = store.currentSeed || 12345
+  const shuffled = shuffleWithSeed(allTasks, seed + 1000) // +1000 чтобы отличался от вопросов
+  return shuffled.slice(0, store.liveCodingCount)
+})
 const currentIndex = ref(0)
 const showSolution = ref(false)
+const rightTab = ref('hints')
 const revealedHints = ref([])
 const copied = ref(false)
 const checkedExpected = ref([])
 const checkedRedFlags = ref([])
+const expandedQuestions = ref([])
 const taskResults = ref({})
 
 const currentTask = computed(() => {
@@ -241,6 +300,15 @@ async function copyCode() {
 function revealHint(idx) {
   if (!revealedHints.value.includes(idx)) {
     revealedHints.value.push(idx)
+  }
+}
+
+function toggleQuestion(idx) {
+  const i = expandedQuestions.value.indexOf(idx)
+  if (i === -1) {
+    expandedQuestions.value.push(idx)
+  } else {
+    expandedQuestions.value.splice(i, 1)
   }
 }
 
@@ -290,6 +358,7 @@ function resetTaskState() {
   revealedHints.value = []
   checkedExpected.value = []
   checkedRedFlags.value = []
+  expandedQuestions.value = []
 }
 
 function prevTask() {
@@ -492,38 +561,76 @@ function goToResults() {
 }
 
 /* Hints Section */
-.hints-section {
-  flex: 0 0 auto;
-  max-height: 180px;
-  overflow: auto;
+/* Tabs Section */
+.tabs-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-top: 2px solid var(--border-color);
+  min-height: 0;
+  overflow: hidden;
 }
 
-.hints-section .panel__header {
-  border-color: var(--neon-yellow);
+.tabs-header {
+  display: flex;
+  background: var(--bg-dark);
+  border-bottom: 2px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tab-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tab-btn.active {
+  background: var(--bg-card);
   color: var(--neon-yellow);
+  border-bottom: 2px solid var(--neon-yellow);
+  margin-bottom: -2px;
+}
+
+.tab-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px;
 }
 
 .hints-list {
-  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .hint-item {
-  margin-bottom: 6px;
+  margin-bottom: 0;
 }
 
 .hint-btn {
   width: 100%;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 10px;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
   background: var(--bg-dark);
-  border: 2px solid var(--border-color);
+  border: 1px solid var(--border-color);
   color: var(--text-secondary);
   font-family: var(--font-terminal);
   font-size: 13px;
   cursor: pointer;
   transition: all 0.15s;
+  text-align: left;
 }
 
 .hint-btn:hover {
@@ -532,8 +639,11 @@ function goToResults() {
 
 .hint-level {
   font-family: var(--font-pixel);
-  font-size: 8px;
+  font-size: 11px;
   color: var(--neon-yellow);
+  background: rgba(255, 247, 0, 0.2);
+  padding: 3px 8px;
+  flex-shrink: 0;
 }
 
 .hint-item.revealed .hint-btn {
@@ -541,71 +651,148 @@ function goToResults() {
   background: rgba(255, 247, 0, 0.1);
 }
 
-.hint-text {
-  padding: 6px 10px;
-  font-family: var(--font-terminal);
-  font-size: 14px;
+.hint-text-inline {
   color: var(--text-primary);
-  background: rgba(255, 247, 0, 0.05);
-  border: 1px solid rgba(255, 247, 0, 0.2);
-  border-top: none;
+  flex: 1;
+  line-height: 1.4;
+}
+
+.hint-hidden {
+  color: var(--text-muted);
+  font-size: 11px;
 }
 
 /* Evaluation Bar */
 .evaluation-bar {
   display: flex;
   gap: 16px;
-  padding: 10px 16px;
+  padding: 8px 12px;
   background: var(--bg-card);
   border-top: 2px solid var(--border-color);
-  max-height: 130px;
-  overflow: auto;
   flex-shrink: 0;
+  max-height: 140px;
+  overflow-y: auto;
 }
 
-.eval-section {
+.eval-column {
   flex: 1;
-}
-
-.eval-section--red .pixel-checkbox__box {
-  border-color: var(--neon-pink);
-}
-
-.eval-section--red .pixel-checkbox input:checked + .pixel-checkbox__box {
-  background: var(--neon-pink);
-  border-color: var(--neon-pink);
+  min-width: 0;
 }
 
 .eval-label {
   font-family: var(--font-pixel);
-  font-size: 8px;
+  font-size: 9px;
   color: var(--neon-green);
   display: block;
   margin-bottom: 6px;
 }
 
-.eval-section--red .eval-label {
+.eval-column--red .eval-label {
   color: var(--neon-pink);
 }
 
-.eval-items {
+.eval-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
-.eval-items .pixel-checkbox {
-  padding: 3px 0;
+.eval-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 8px;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.15s;
 }
 
-.eval-items .pixel-checkbox__box {
+.eval-checkbox:hover {
+  border-color: var(--neon-green);
+  background: rgba(57, 255, 20, 0.05);
+}
+
+.eval-checkbox input {
+  display: none;
+}
+
+.eval-checkbox .checkbox-icon {
+  font-size: 14px;
+  color: var(--text-muted);
+  flex-shrink: 0;
   width: 18px;
-  height: 18px;
+  text-align: center;
 }
 
-.eval-items .pixel-checkbox__label {
-  font-size: 13px;
+.eval-checkbox input:checked ~ .checkbox-icon {
+  color: var(--neon-green);
 }
+
+.eval-checkbox .checkbox-label {
+  font-family: var(--font-terminal);
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.eval-checkbox input:checked ~ .checkbox-label {
+  color: var(--neon-green);
+}
+
+/* Red variant */
+.eval-checkbox--red:hover {
+  border-color: var(--neon-pink);
+  background: rgba(255, 16, 240, 0.05);
+}
+
+.eval-checkbox--red input:checked ~ .checkbox-icon {
+  color: var(--neon-pink);
+}
+
+.eval-checkbox--red input:checked ~ .checkbox-label {
+  color: var(--neon-pink);
+}
+
+/* Critical Questions in Tab */
+.critical-questions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.critical-question {
+  font-family: var(--font-terminal);
+  font-size: 13px;
+  padding: 10px 12px;
+  background: rgba(0, 255, 255, 0.05);
+  border-left: 3px solid var(--neon-cyan);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.critical-question:hover {
+  background: rgba(0, 255, 255, 0.1);
+}
+
+.critical-question.expanded {
+  background: rgba(0, 255, 255, 0.1);
+  border-left-width: 5px;
+}
+
+.cq-question {
+  color: var(--neon-cyan);
+  line-height: 1.4;
+}
+
+.cq-answer {
+  color: var(--neon-green);
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(0, 255, 255, 0.3);
+  line-height: 1.4;
+}
+
 
 /* Navigation Bar */
 .nav-bar {
