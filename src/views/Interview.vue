@@ -74,31 +74,8 @@
       </div>
     </div>
 
-    <!-- Section Preamble Modal -->
-    <div v-if="showPreamble && section" class="preamble-overlay">
-      <div class="preamble-modal pixel-card">
-        <div class="preamble-icon">{{ section.icon }}</div>
-        <h2 class="preamble-title">{{ section.name }}</h2>
-        
-        <p class="preamble-text">{{ section.preamble }}</p>
-        
-        <div class="preamble-stats">
-          <span class="stat-value">{{ questionsCount }}</span>
-          <span class="stat-label">вопросов в секции</span>
-        </div>
-        
-        <p class="preamble-hint" v-if="section.hint">
-          💡 {{ section.hint }}
-        </p>
-        
-        <button class="pixel-btn pixel-btn--green" @click="startSection">
-          ▶ НАЧАТЬ
-        </button>
-      </div>
-    </div>
-
     <!-- Empty section handler -->
-    <div v-if="!showPreamble && questionsCount === 0" class="empty-section">
+    <div v-if="questionsCount === 0" class="empty-section">
       <div class="page-container text-center">
         <p class="terminal-text mb-lg">
           В этой секции нет вопросов в выбранном пуле
@@ -121,7 +98,7 @@
     </div>
 
     <!-- Main content -->
-    <template v-if="!showPreamble && questionsCount > 0 && question">
+    <template v-if="questionsCount > 0 && question">
       <!-- Header -->
       <div class="header-bar">
         <div class="header-bar__section">
@@ -130,9 +107,39 @@
           <span class="section-counter">
             ({{ store.currentSectionIndex + 1 }}/{{ totalSections }})
           </span>
+          <button 
+            v-if="section.preamble" 
+            class="preamble-toggle"
+            @click="showPreambleBanner = !showPreambleBanner"
+            :title="showPreambleBanner ? 'Скрыть преамбулу' : 'Показать преамбулу'"
+          >
+            {{ showPreambleBanner ? '▲' : '▼' }}
+          </button>
         </div>
         <div class="question-counter">
           {{ qNum.current }}/{{ qNum.total }}
+        </div>
+      </div>
+
+      <!-- Section Info Banner (collapsible) -->
+      <div v-if="showPreambleBanner && section" class="section-info-banner">
+        <div class="section-info__say">
+          <span class="info-label">📢 Скажи:</span>
+          <span class="info-text">"{{ section.sayToCandidate }}"</span>
+        </div>
+        <div class="section-info__columns">
+          <div class="info-column info-column--green">
+            <span class="info-label">✓ Смотри на:</span>
+            <ul class="info-list">
+              <li v-for="item in section.lookFor" :key="item">{{ item }}</li>
+            </ul>
+          </div>
+          <div class="info-column info-column--red">
+            <span class="info-label">🚩 Red flags:</span>
+            <ul class="info-list">
+              <li v-for="item in section.redFlags" :key="item">{{ item }}</li>
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -415,9 +422,9 @@ const editedName = ref('')
 const nameInput = ref(null)
 const questionVariant = ref(0)  // 0 = main, 1 = alt1, 2 = alt2
 const followUpVariant = ref(0)  // 0 = main, 1 = alt1, 2 = alt2
+const showPreambleBanner = ref(false)  // Показывать преамбулу секции
 
 // Computed
-const showPreamble = computed(() => store.showSectionPreamble)
 const section = computed(() => store.currentSection)
 const question = computed(() => store.currentQuestion)
 const qNum = computed(() => store.currentQuestionNumber)
@@ -489,14 +496,6 @@ function handleKeydown(e) {
     return
   }
   
-  if (showPreamble.value) {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault()
-      startSection()
-    }
-    return
-  }
-  
   if (e.key === '1') setResult('correct')
   if (e.key === '2') setResult('partial')
   if (e.key === '3') setResult('wrong')
@@ -526,10 +525,6 @@ onUnmounted(() => {
 })
 
 // Actions
-function startSection() {
-  store.dismissPreamble()
-}
-
 function setResult(result) {
   if (!question.value) return
   store.setAnswer(
@@ -897,86 +892,6 @@ function saveName() {
   padding-top: 36px;
 }
 
-/* Preamble Modal */
-.preamble-overlay {
-  position: fixed;
-  top: 36px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(10, 10, 15, 0.95);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 100;
-  padding: 24px;
-}
-
-.preamble-modal {
-  max-width: 500px;
-  text-align: center;
-  animation: modalIn 0.3s ease;
-}
-
-@keyframes modalIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.preamble-icon {
-  font-size: 64px;
-  margin-bottom: 16px;
-}
-
-.preamble-title {
-  font-family: var(--font-pixel);
-  font-size: 18px;
-  color: var(--neon-cyan);
-  margin-bottom: 24px;
-}
-
-.preamble-text {
-  font-family: var(--font-terminal);
-  font-size: 22px;
-  color: var(--text-secondary);
-  margin-bottom: 24px;
-  line-height: 1.5;
-}
-
-.preamble-stats {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.stat-value {
-  font-family: var(--font-pixel);
-  font-size: 32px;
-  color: var(--neon-pink);
-}
-
-.stat-label {
-  font-family: var(--font-terminal);
-  font-size: 18px;
-  color: var(--text-secondary);
-}
-
-.preamble-hint {
-  font-family: var(--font-terminal);
-  font-size: 18px;
-  color: var(--neon-green);
-  background: rgba(57, 255, 20, 0.1);
-  padding: 12px;
-  margin-bottom: 24px;
-}
-
 /* Empty section */
 .empty-section {
   min-height: 100vh;
@@ -1006,6 +921,88 @@ function saveName() {
   font-family: var(--font-terminal);
   font-size: 16px;
   color: var(--text-secondary);
+}
+
+.preamble-toggle {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  padding: 2px 6px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.preamble-toggle:hover {
+  border-color: var(--neon-yellow);
+  color: var(--neon-yellow);
+}
+
+/* Section Info Banner */
+.section-info-banner {
+  background: var(--bg-card);
+  border-bottom: 2px solid var(--border-color);
+  padding: 10px 16px;
+}
+
+.section-info__say {
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--border-color);
+}
+
+.section-info__say .info-label {
+  color: var(--neon-cyan);
+}
+
+.section-info__say .info-text {
+  font-family: var(--font-terminal);
+  font-size: 14px;
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+.section-info__columns {
+  display: flex;
+  gap: 24px;
+}
+
+.info-column {
+  flex: 1;
+}
+
+.info-label {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.info-column--green .info-label {
+  color: var(--neon-green);
+}
+
+.info-column--red .info-label {
+  color: var(--neon-pink);
+}
+
+.info-list {
+  margin: 0;
+  padding-left: 16px;
+  font-family: var(--font-terminal);
+  font-size: 12px;
+}
+
+.info-column--green .info-list {
+  color: var(--neon-green);
+}
+
+.info-column--red .info-list {
+  color: var(--neon-pink);
+}
+
+.info-list li {
+  margin-bottom: 2px;
 }
 
 .question-counter {
