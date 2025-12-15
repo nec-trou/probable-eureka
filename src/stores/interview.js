@@ -376,7 +376,7 @@ export const useInterviewStore = defineStore('interview', () => {
   }
 
   function setLiveCodingCount(count) {
-    liveCodingCount.value = Math.min(4, Math.max(1, count))
+    liveCodingCount.value = Math.min(5, Math.max(1, count))
   }
 
   function setExpandNotesDefault(value) {

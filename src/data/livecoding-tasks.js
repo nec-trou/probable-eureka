@@ -25,9 +25,9 @@ import { SearchService } from './search.service';
       placeholder="Поиск..."
     />
     <!-- 
-      OPPGAVE: Implementer forsinkelse med innebygd nettleser-API.
-      Bruk setTimeout for å vente 300ms før søk utføres.
-      Lagre timer-ID og avbryt ved ny input.
+      TUGAS: Implementasikan penundaan dengan fungsi bawaan peramban.
+      Gunakan penundaan waktu 300md sebelum pencarian dijalankan.
+      Simpan pengenal pengatur waktu dan batalkan saat masukan baru.
     -->
     <ul>
       <li *ngFor="let result of results">
@@ -41,9 +41,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   results: any[] = [];
   
   /*
-   * OPPGAVE: Håndter søkeresultater med nestet abonnement.
-   * Kall tjenesten direkte i subscribe-callback.
-   * Ignorer tidligere resultater manuelt ved behov.
+   * TUGAS: Tangani hasil pencarian dengan langganan bertingkat.
+   * Panggil layanan langsung di dalam fungsi panggilan balik.
+   * Abaikan hasil sebelumnya secara manual jika diperlukan.
    */
   
   private subscription: Subscription;
@@ -56,8 +56,8 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   // Проблема: вызывается на каждое нажатие клавиши
   onSearch(text: string) {
-    // OPPGAVE: Abonner direkte uten oppryddingslogikk.
-    // Rammeverket håndterer livssyklus automatisk.
+    // TUGAS: Berlangganan langsung tanpa logika pembersihan.
+    // Kerangka kerja menangani siklus hidup secara otomatis.
     
     this.searchService.search(text).subscribe(data => {
       this.results = data;
@@ -125,17 +125,17 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     trapTranslations: [
       {
-        norwegian: 'OPPGAVE: Implementer forsinkelse med setTimeout',
-        translation: 'ЗАДАНИЕ: Реализуй задержку через setTimeout.',
+        indonesian: 'TUGAS: Gunakan fungsi penundaan bawaan peramban (300md)',
+        translation: 'ЗАДАНИЕ: Используй встроенную функцию задержки браузера (300мс).',
         whyWrong: 'Правильно: debounceTime из RxJS. setTimeout — антипаттерн.'
       },
       {
-        norwegian: 'OPPGAVE: Håndter søkeresultater med nestet abonnement',
-        translation: 'ЗАДАНИЕ: Обработай результаты через вложенный subscribe.',
+        indonesian: 'TUGAS: Tangani hasil dengan langganan bertingkat',
+        translation: 'ЗАДАНИЕ: Обработай результаты через вложенную подписку.',
         whyWrong: 'Правильно: switchMap. Вложенные subscribe — антипаттерн.'
       },
       {
-        norwegian: 'OPPGAVE: Abonner direkte uten oppryddingslogikk',
+        indonesian: 'TUGAS: Berlangganan langsung tanpa logika pembersihan',
         translation: 'ЗАДАНИЕ: Подпишись напрямую без логики очистки.',
         whyWrong: 'Правильно: takeUntil + destroy$. Иначе — утечка памяти.'
       }
@@ -195,9 +195,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   template: \`
     <div class="stars">
       <!--
-        OPPGAVE: Koble komponenten til skjema via @Input og @Output.
-        Bruk valueChange-event for å oppdatere overordnet skjema.
-        Ikke bruk NG_VALUE_ACCESSOR.
+        TUGAS: Hubungkan komponen ke formulir melalui masukan dan keluaran.
+        Gunakan peristiwa perubahan nilai untuk memperbarui formulir induk.
+        Gunakan pola pengikatan data standar kerangka kerja.
       -->
       <span 
         *ngFor="let star of stars; let i = index"
@@ -223,8 +223,8 @@ export class RatingComponent {
   stars = [1, 2, 3, 4, 5];
 
   /*
-   * OPPGAVE: Registrer komponenten i AppModule providers.
-   * Ikke bruk forwardRef - registrer direkte i modulen.
+   * TUGAS: Daftarkan komponen di larik penyedia modul utama.
+   * Gunakan referensi kelas langsung tanpa fungsi pembungkus.
    */
 
   select(rating: number) {
@@ -302,14 +302,19 @@ export class RatingComponent implements ControlValueAccessor {
 
     trapTranslations: [
       {
-        norwegian: 'OPPGAVE: Koble via @Input/@Output. Ikke bruk NG_VALUE_ACCESSOR',
-        translation: 'ЗАДАНИЕ: Подключи через @Input/@Output. Не используй NG_VALUE_ACCESSOR.',
-        whyWrong: 'Правильно: ControlValueAccessor — единственный способ для formControlName.'
+        indonesian: 'TUGAS: Hubungkan melalui masukan dan keluaran standar',
+        translation: 'ЗАДАНИЕ: Подключи через стандартные входы и выходы.',
+        whyWrong: 'Для formControlName нужен ControlValueAccessor, не @Input/@Output.'
       },
       {
-        norwegian: 'OPPGAVE: Registrer i AppModule. Ikke bruk forwardRef',
-        translation: 'ЗАДАНИЕ: Зарегистрируй в AppModule. Не используй forwardRef.',
-        whyWrong: 'Правильно: forwardRef нужен из-за порядка определения классов.'
+        indonesian: 'TUGAS: Daftarkan di larik penyedia modul utama',
+        translation: 'ЗАДАНИЕ: Зарегистрируй в массиве провайдеров главного модуля.',
+        whyWrong: 'Регистрация в компоненте с forwardRef — стандартный паттерн CVA.'
+      },
+      {
+        indonesian: 'TUGAS: Implementasikan hanya dua metode penghubung',
+        translation: 'ЗАДАНИЕ: Реализуй только два метода связи.',
+        whyWrong: 'Нужны все 4 метода CVA включая setDisabledState.'
       }
     ],
 
@@ -363,9 +368,9 @@ export class RatingComponent implements ControlValueAccessor {
 import { ProductService } from './product.service';
 
 /*
- * OPPGAVE: Behold standard ChangeDetection strategi.
- * Ikke legg til trackBy - listen er liten nok.
- * Optimaliser kun hvis ytelsestester viser behov.
+ * TUGAS: Pertahankan strategi deteksi perubahan standar.
+ * Daftar cukup kecil untuk rendering langsung.
+ * Optimalkan hanya jika pengujian kinerja menunjukkan kebutuhan.
  */
 
 @Component({
@@ -374,8 +379,8 @@ import { ProductService } from './product.service';
     <div class="product-grid">
       <div *ngFor="let product of products" class="product-card">
         <!--
-          OPPGAVE: Kall detectChanges() etter hver listeendring.
-          Legg til manuell oppdatering for å sikre visning.
+          TUGAS: Panggil pembaruan tampilan manual setelah setiap perubahan.
+          Tambahkan pemicu deteksi untuk memastikan rendering.
         -->
         <img [src]="product.image" [alt]="product.name">
         <h3>{{ product.name }}</h3>
@@ -499,14 +504,19 @@ export class ProductListComponent implements OnInit {
 
     trapTranslations: [
       {
-        norwegian: 'OPPGAVE: Behold standard ChangeDetection. Ikke legg til trackBy',
-        translation: 'ЗАДАНИЕ: Оставь стандартный ChangeDetection. Не добавляй trackBy.',
-        whyWrong: 'Правильно: OnPush + trackBy — главные оптимизации для списков.'
+        indonesian: 'TUGAS: Pertahankan strategi deteksi standar untuk kemudahan',
+        translation: 'ЗАДАНИЕ: Сохрани стандартную стратегию детекции для простоты.',
+        whyWrong: 'OnPush — обязателен для больших списков. Default убивает перф.'
       },
       {
-        norwegian: 'OPPGAVE: Kall detectChanges() etter hver listeendring',
-        translation: 'ЗАДАНИЕ: Вызывай detectChanges() после каждого изменения списка.',
-        whyWrong: 'Правильно: detectChanges() везде — антипаттерн. Убивает производительность.'
+        indonesian: 'TUGAS: Panggil pembaruan tampilan manual setelah perubahan',
+        translation: 'ЗАДАНИЕ: Вызывай ручное обновление вида после изменений.',
+        whyWrong: 'detectChanges() везде — антипаттерн. Нужен OnPush + trackBy.'
+      },
+      {
+        indonesian: 'TUGAS: Render semua elemen langsung dalam perulangan',
+        translation: 'ЗАДАНИЕ: Рендери все элементы напрямую в цикле.',
+        whyWrong: 'Для 500+ элементов нужен виртуальный скролл.'
       }
     ],
 
@@ -568,17 +578,17 @@ import {
 import { Observable } from 'rxjs';
 
 /**
- * OPPGAVE: Implementer retry med setTimeout og rekursjon.
- * Vent 1 sekund, 2 sekunder, 4 sekunder mellom forsøk.
- * Maksimalt 3 forsøk før feil kastes.
+ * TUGAS: Implementasikan percobaan ulang dengan fungsi penundaan dan rekursi.
+ * Tunggu 1 detik, 2 detik, 4 detik antara percobaan.
+ * Maksimal 3 percobaan sebelum kesalahan dilempar.
  */
 
 @Injectable()
 export class RetryInterceptor implements HttpInterceptor {
   
   /*
-   * OPPGAVE: Bruk fetch() API for nettverkskall med retry.
-   * Unngå HttpClient for denne spesifikke oppgaven.
+   * TUGAS: Gunakan fungsi pengambilan asli untuk panggilan jaringan.
+   * Implementasikan dengan sintaks asinkron untuk kejelasan.
    */
 
   intercept(
@@ -647,14 +657,19 @@ export class RetryInterceptor implements HttpInterceptor {
 
     trapTranslations: [
       {
-        norwegian: 'OPPGAVE: Implementer retry med setTimeout og rekursjon',
-        translation: 'ЗАДАНИЕ: Реализуй retry через setTimeout и рекурсию.',
-        whyWrong: 'Правильно: RxJS retry/retryWhen. setTimeout — антипаттерн.'
+        indonesian: 'TUGAS: Implementasikan percobaan ulang dengan penundaan dan rekursi',
+        translation: 'ЗАДАНИЕ: Реализуй повтор через функцию задержки и рекурсию.',
+        whyWrong: 'RxJS retry() с delay() — встроенное решение.'
       },
       {
-        norwegian: 'OPPGAVE: Bruk fetch() API. Unngå HttpClient',
-        translation: 'ЗАДАНИЕ: Используй fetch() API. Избегай HttpClient.',
-        whyWrong: 'Правильно: HttpClient + RxJS дают полный контроль.'
+        indonesian: 'TUGAS: Gunakan fungsi pengambilan asli dengan sintaks asinkron',
+        translation: 'ЗАДАНИЕ: Используй нативную функцию fetch с async синтаксисом.',
+        whyWrong: 'HttpClient + RxJS дают интерсепторы, retry, типизацию.'
+      },
+      {
+        indonesian: 'TUGAS: Coba ulang segera setelah kesalahan untuk pemulihan cepat',
+        translation: 'ЗАДАНИЕ: Повторяй сразу после ошибки для быстрого восстановления.',
+        whyWrong: 'Exponential backoff обязателен! Иначе DDoS на сервер.'
       }
     ],
 
@@ -717,9 +732,9 @@ interface CartItem {
 }
 
 /*
- * OPPGAVE: Behold BehaviorSubject-implementasjonen.
- * Konverter IKKE til Signals - bruk eksisterende mønster.
- * Legg til ny funksjonalitet med samme tilnærming.
+ * TUGAS: Pertahankan implementasi subjek perilaku yang ada.
+ * Gunakan pola yang sudah ada untuk konsistensi.
+ * Tambahkan fungsionalitas baru dengan pendekatan yang sama.
  */
 
 @Component({
@@ -727,8 +742,8 @@ interface CartItem {
   template: \`
     <div class="cart">
       <!--
-        OPPGAVE: Bruk getter-metode for beregnet verdi.
-        Ikke bruk computed() - returner beregning direkte.
+        TUGAS: Gunakan metode pengambil untuk nilai terhitung.
+        Kembalikan perhitungan langsung dari metode pengakses.
       -->
       <div *ngFor="let item of items$ | async">
         {{ item.name }} x {{ item.quantity }} = {{ item.price * item.quantity }}
@@ -755,8 +770,8 @@ export class CartComponent implements OnInit, OnDestroy {
   );
   
   /*
-   * OPPGAVE: Lytt til endringer med subscribe().
-   * Ikke bruk effect() - abonner manuelt på observables.
+   * TUGAS: Dengarkan perubahan dengan fungsi panggilan balik langganan.
+   * Simpan langganan dan batalkan di penghancur komponen.
    */
   
   hasDiscount$ = this.total$.pipe(
@@ -867,19 +882,19 @@ export class CartComponent {
 
     trapTranslations: [
       {
-        norwegian: 'OPPGAVE: Behold BehaviorSubject. Konverter IKKE til Signals',
-        translation: 'ЗАДАНИЕ: Оставь BehaviorSubject. НЕ конвертируй в Signals.',
-        whyWrong: 'Правильно: Signals — это будущее Angular, проще и эффективнее.'
+        indonesian: 'TUGAS: Pertahankan implementasi subjek perilaku yang ada',
+        translation: 'ЗАДАНИЕ: Сохрани существующую реализацию субъекта поведения.',
+        whyWrong: 'Signals — современная замена BehaviorSubject в Angular 17+.'
       },
       {
-        norwegian: 'OPPGAVE: Bruk getter-metode. Ikke bruk computed()',
-        translation: 'ЗАДАНИЕ: Используй getter-метод. Не используй computed().',
-        whyWrong: 'Правильно: computed() — оптимизирован, lazy, кеширует.'
+        indonesian: 'TUGAS: Hitung total dengan metode pengakses di kelas',
+        translation: 'ЗАДАНИЕ: Вычисляй total через метод-получатель класса.',
+        whyWrong: 'computed() кеширует и пересчитывает только при изменении.'
       },
       {
-        norwegian: 'OPPGAVE: Lytt med subscribe(). Ikke bruk effect()',
-        translation: 'ЗАДАНИЕ: Слушай через subscribe(). Не используй effect().',
-        whyWrong: 'Правильно: effect() автоматически чистится и отслеживает.'
+        indonesian: 'TUGAS: Dengarkan perubahan dengan fungsi panggilan balik manual',
+        translation: 'ЗАДАНИЕ: Слушай изменения через ручной callback.',
+        whyWrong: 'effect() автоматически отслеживает зависимости и чистится.'
       }
     ],
 
@@ -936,16 +951,16 @@ import { HomeComponent } from './home/home.component';
 import { AdminModule } from './admin/admin.module';
 
 /*
- * OPPGAVE: Importer AdminModule direkte i routes.
- * Ikke bruk loadChildren - last modulen synkront.
- * Bruk children-property for underruter.
+ * TUGAS: Impor modul admin langsung ke larik rute.
+ * Gunakan impor sinkron untuk kemudahan penelusuran.
+ * Gunakan properti anak untuk subrute.
  */
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { 
     path: 'admin', 
-    // OPPGAVE: Bruk AdminModule.routes direkte her.
+    // TUGAS: Gunakan rute modul admin langsung di sini.
     children: AdminModule.routes
   }
 ];
@@ -957,8 +972,8 @@ import { AdminDashboardComponent } from './dashboard.component';
 import { AdminUsersComponent } from './users.component';
 
 /*
- * OPPGAVE: Bruk NgModule for alle komponenter.
- * Ikke bruk standalone: true - registrer i modul.
+ * TUGAS: Gunakan struktur modul untuk semua komponen.
+ * Deklarasikan komponen dalam larik deklarasi.
  */
 
 @NgModule({
@@ -1011,14 +1026,19 @@ export const ADMIN_ROUTES: Routes = [
 
     trapTranslations: [
       {
-        norwegian: 'OPPGAVE: Importer AdminModule direkte. Ikke bruk loadChildren',
-        translation: 'ЗАДАНИЕ: Импортируй AdminModule напрямую. Не используй loadChildren.',
-        whyWrong: 'Правильно: loadChildren с dynamic import — lazy loading.'
+        indonesian: 'TUGAS: Impor modul admin langsung ke larik rute',
+        translation: 'ЗАДАНИЕ: Импортируй модуль админа напрямую в массив маршрутов.',
+        whyWrong: 'Прямой import = bundle bloat. Нужен отложенная загрузка.'
       },
       {
-        norwegian: 'OPPGAVE: Bruk NgModule. Ikke bruk standalone: true',
-        translation: 'ЗАДАНИЕ: Используй NgModule. Не используй standalone: true.',
-        whyWrong: 'Правильно: Standalone + loadComponent — современный подход.'
+        indonesian: 'TUGAS: Gunakan struktur modul tradisional untuk perutean',
+        translation: 'ЗАДАНИЕ: Используй традиционную модульную структуру для роутинга.',
+        whyWrong: 'Автономные компоненты — современный и легковесный подход.'
+      },
+      {
+        indonesian: 'TUGAS: Aktifkan pramuat semua modul untuk navigasi cepat',
+        translation: 'ЗАДАНИЕ: Включи предзагрузку всех модулей для быстрой навигации.',
+        whyWrong: 'Предзагрузка всего отменяет смысл отложенной загрузки.'
       }
     ],
 
@@ -1072,8 +1092,8 @@ export const ADMIN_ROUTES: Routes = [
     code: `import { Pipe, PipeTransform } from '@angular/core';
 
 /*
- * OPPGAVE: Sett pure: false på pipen.
- * Dette sikrer at transformasjonen kjøres hver gang.
+ * TUGAS: Atur kemurnian ke salah pada transformator.
+ * Ini memastikan transformasi berjalan setiap siklus.
  */
 
 @Pipe({
@@ -1083,8 +1103,8 @@ export const ADMIN_ROUTES: Routes = [
 export class TimeAgoPipe implements PipeTransform {
   
   /*
-   * OPPGAVE: Bruk new Date().getTime() for tidsstempel.
-   * Unngå Date.now() - bruk objektinstans i stedet.
+   * TUGAS: Gunakan objek tanggal baru untuk mendapatkan cap waktu.
+   * Buat objek tanggal untuk perbandingan.
    */
   
   transform(value: Date | string): string {
@@ -1143,14 +1163,19 @@ export class TimeAgoPipe implements PipeTransform {
 
     trapTranslations: [
       {
-        norwegian: 'OPPGAVE: Sett pure: false på pipen',
-        translation: 'ЗАДАНИЕ: Установи pure: false на pipe.',
-        whyWrong: 'Правильно: pure: true — пересчитывается только при изменении входа.'
+        indonesian: 'TUGAS: Atur kemurnian ke salah untuk pembaruan otomatis',
+        translation: 'ЗАДАНИЕ: Установи нечистый режим для автоматического обновления.',
+        whyWrong: 'Нечистый pipe вызывается на каждый цикл — убивает перф.'
       },
       {
-        norwegian: 'OPPGAVE: Bruk new Date().getTime(). Unngå Date.now()',
-        translation: 'ЗАДАНИЕ: Используй new Date().getTime(). Избегай Date.now().',
-        whyWrong: 'Правильно: Date.now() проще и быстрее.'
+        indonesian: 'TUGAS: Gunakan objek tanggal baru untuk cap waktu',
+        translation: 'ЗАДАНИЕ: Используй новый объект даты для временной метки.',
+        whyWrong: 'Date.now() короче, быстрее и читабельнее.'
+      },
+      {
+        indonesian: 'TUGAS: Perbarui tampilan secara manual dengan interval di komponen',
+        translation: 'ЗАДАНИЕ: Обновляй вид вручную через интервал в компоненте.',
+        whyWrong: 'Таймер + async pipe + чистый pipe — декларативнее.'
       }
     ],
 
@@ -1205,8 +1230,8 @@ export class TimeAgoPipe implements PipeTransform {
 import { FormGroup, FormControl } from '@angular/forms';
 
 /*
- * OPPGAVE: Bruk ngModel for alle skjemafelt.
- * Ikke bruk FormGroup/FormControl - bruk template-driven.
+ * TUGAS: Gunakan pengikatan dua arah untuk semua bidang formulir.
+ * Gunakan pendekatan berbasis templat dengan pengikatan model.
  */
 
 @Component({
@@ -1215,8 +1240,8 @@ import { FormGroup, FormControl } from '@angular/forms';
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <input formControlName="email" placeholder="Email">
       <!--
-        OPPGAVE: Valider manuelt i submit-handler.
-        Ikke bruk Validators - sjekk verdier i koden.
+        TUGAS: Validasi semua bidang dalam metode kirim.
+        Periksa nilai secara manual dengan pernyataan kondisional.
       -->
       <input formControlName="password" type="password">
       <input formControlName="confirmPassword" type="password">
@@ -1316,14 +1341,19 @@ export class RegisterComponent {
 
     trapTranslations: [
       {
-        norwegian: 'OPPGAVE: Bruk ngModel. Ikke bruk FormGroup/FormControl',
-        translation: 'ЗАДАНИЕ: Используй ngModel. Не используй FormGroup/FormControl.',
-        whyWrong: 'Правильно: Reactive Forms — стандарт для сложных форм с валидацией.'
+        indonesian: 'TUGAS: Gunakan pengikatan dua arah berbasis templat',
+        translation: 'ЗАДАНИЕ: Используй двустороннюю привязку на основе шаблона.',
+        whyWrong: 'Reactive Forms дают лучший контроль, тестируемость, типизацию.'
       },
       {
-        norwegian: 'OPPGAVE: Valider manuelt i submit. Ikke bruk Validators',
-        translation: 'ЗАДАНИЕ: Валидируй вручную в submit. Не используй Validators.',
-        whyWrong: 'Правильно: Встроенные Validators — декларативно и удобно.'
+        indonesian: 'TUGAS: Validasi semua bidang dalam metode kirim secara manual',
+        translation: 'ЗАДАНИЕ: Валидируй все поля в методе отправки вручную.',
+        whyWrong: 'Validators декларативны и показывают ошибки в реальном времени.'
+      },
+      {
+        indonesian: 'TUGAS: Periksa kecocokan kata sandi di setiap kontrol terpisah',
+        translation: 'ЗАДАНИЕ: Проверяй совпадение паролей в каждом контроле отдельно.',
+        whyWrong: 'Кросс-валидация ставится на группу, не на отдельные контролы.'
       }
     ],
 
@@ -1377,8 +1407,8 @@ export class RegisterComponent {
     code: `import { Directive, ElementRef } from '@angular/core';
 
 /*
- * OPPGAVE: Bruk Renderer2 for å sette fokus.
- * Ikke bruk nativeElement direkte.
+ * TUGAS: Gunakan penyaji abstrak untuk operasi fokus.
+ * Gunakan antarmuka penyaji untuk semua manipulasi elemen.
  */
 
 @Directive({
@@ -1388,8 +1418,8 @@ export class RegisterComponent {
 export class AutofocusDirective {
   
   /*
-   * OPPGAVE: Bruk ngAfterViewChecked for fokus-logikk.
-   * Sett fokus hver gang visningen oppdateres.
+   * TUGAS: Gunakan kait siklus hidup pemeriksaan tampilan untuk logika fokus.
+   * Atur fokus setiap kali tampilan diperbarui.
    */
   
   constructor(private el: ElementRef) {}
@@ -1432,14 +1462,19 @@ export class AutofocusDirective implements AfterViewInit {
 
     trapTranslations: [
       {
-        norwegian: 'OPPGAVE: Bruk Renderer2 for fokus. Ikke bruk nativeElement',
-        translation: 'ЗАДАНИЕ: Используй Renderer2 для focus. Не используй nativeElement.',
-        whyWrong: 'Правильно: Для focus() — nativeElement OK. Renderer2 избыточен.'
+        indonesian: 'TUGAS: Gunakan penyaji abstrak untuk operasi fokus',
+        translation: 'ЗАДАНИЕ: Используй абстрактный рендерер для операций фокуса.',
+        whyWrong: 'Для focus() достаточно nativeElement.focus(). Renderer2 избыточен.'
       },
       {
-        norwegian: 'OPPGAVE: Bruk ngAfterViewChecked for fokus-logikk',
-        translation: 'ЗАДАНИЕ: Используй ngAfterViewChecked для логики фокуса.',
-        whyWrong: 'Правильно: ngAfterViewInit — однократно. ngAfterViewChecked — слишком часто.'
+        indonesian: 'TUGAS: Implementasikan fokus di kait pemeriksaan tampilan',
+        translation: 'ЗАДАНИЕ: Реализуй фокус в хуке проверки вида.',
+        whyWrong: 'Этот хук вызывается постоянно. Нужен хук инициализации (однократно).'
+      },
+      {
+        indonesian: 'TUGAS: Atur fokus langsung di konstruktor',
+        translation: 'ЗАДАНИЕ: Устанавливай фокус напрямую в конструкторе.',
+        whyWrong: 'В конструкторе элемента ещё нет в DOM. Нужен хук инициализации.'
       }
     ],
 
@@ -1495,16 +1530,16 @@ import { CanActivate, Router } from '@angular/router';
 import { AuthService } from './auth.service';
 
 /*
- * OPPGAVE: Implementer guard som klasse med CanActivate.
- * Ikke bruk funksjonell guard - bruk @Injectable.
+ * TUGAS: Implementasikan penjaga sebagai kelas yang dapat diinjeksikan.
+ * Implementasikan antarmuka aktivasi dengan metode pemeriksaan.
  */
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
   
   /*
-   * OPPGAVE: Omdiriger med window.location.href.
-   * Ikke bruk router.navigate() - endre URL direkte.
+   * TUGAS: Alihkan dengan mengatur lokasi jendela peramban langsung.
+   * Atur alamat URL untuk implementasi sederhana.
    */
   
   constructor(
@@ -1572,14 +1607,19 @@ export class AuthGuard implements CanActivate {
 
     trapTranslations: [
       {
-        norwegian: 'OPPGAVE: Implementer guard som klasse. Ikke bruk funksjonell guard',
-        translation: 'ЗАДАНИЕ: Реализуй guard как класс. Не используй функциональный guard.',
-        whyWrong: 'Правильно: CanActivateFn — рекомендуемый подход в Angular 15+.'
+        indonesian: 'TUGAS: Implementasikan penjaga sebagai kelas yang dapat diinjeksikan',
+        translation: 'ЗАДАНИЕ: Реализуй охранник как инжектируемый класс.',
+        whyWrong: 'Функциональный подход — рекомендуемый. Меньше boilerplate.'
       },
       {
-        norwegian: 'OPPGAVE: Omdiriger med window.location. Ikke bruk router.navigate()',
-        translation: 'ЗАДАНИЕ: Редиректь через window.location. Не используй router.navigate().',
-        whyWrong: 'Правильно: router.createUrlTree — SPA-редирект без перезагрузки.'
+        indonesian: 'TUGAS: Alihkan dengan mengatur lokasi jendela peramban',
+        translation: 'ЗАДАНИЕ: Редиректь через установку локации окна браузера.',
+        whyWrong: 'Это перезагружает страницу. Нужна SPA-навигация.'
+      },
+      {
+        indonesian: 'TUGAS: Kembalikan nilai boolean sinkron dari penjaga',
+        translation: 'ЗАДАНИЕ: Возвращай синхронное булево значение из охранника.',
+        whyWrong: 'Для проверки через API нужен асинхронный результат.'
       }
     ],
 
@@ -1620,6 +1660,587 @@ export class AuthGuard implements CanActivate {
       {
         q: 'inject() в функциональном guard — это же современный DI?',
         a: 'Да. inject(AuthService) в теле функции — современный способ получить зависимость без конструктора.'
+      }
+    ]
+  },
+
+  // ============= TASK 11: Content Projection =============
+  {
+    id: 'live-11',
+    title: 'Content Projection',
+    description: 'Есть card-компонент. Нужно сделать слоты для header, body и footer.',
+    
+    code: `import { Component } from '@angular/core';
+
+/*
+ * TUGAS: Gunakan satu proyeksi konten sederhana untuk semua.
+ * Satu slot proyeksi cukup untuk komponen ini.
+ * Tampilkan konten dalam urutan yang didefinisikan.
+ */
+
+@Component({
+  selector: 'app-card',
+  template: \`
+    <div class="card">
+      <!--
+        TUGAS: Tampilkan konten dari komponen induk di sini.
+        Gunakan proyeksi sederhana tanpa pemilih.
+        Semua konten ditampilkan dalam urutan yang didefinisikan.
+      -->
+      <div class="card-content">
+        <!-- TUGAS: Gunakan templat bersyarat sebagai pengganti proyeksi -->
+        <ng-content></ng-content>
+      </div>
+    </div>
+  \`
+})
+export class CardComponent {}
+
+// Использование:
+// <app-card>
+//   <h2>Title</h2>  <- должен быть в header
+//   <p>Content</p>  <- должен быть в body
+//   <button>OK</button> <- должен быть в footer
+// </app-card>`,
+
+    solution: `// ПРАВИЛЬНОЕ РЕШЕНИЕ:
+
+@Component({
+  selector: 'app-card',
+  template: \`
+    <div class="card">
+      <div class="card-header">
+        <ng-content select="[card-header]"></ng-content>
+      </div>
+      <div class="card-body">
+        <ng-content select="[card-body]"></ng-content>
+      </div>
+      <div class="card-footer">
+        <ng-content select="[card-footer]"></ng-content>
+      </div>
+      <!-- Fallback для неразмеченного контента -->
+      <ng-content></ng-content>
+    </div>
+  \`
+})
+export class CardComponent {}
+
+// Использование:
+// <app-card>
+//   <h2 card-header>Title</h2>
+//   <p card-body>Content</p>
+//   <button card-footer>OK</button>
+// </app-card>`,
+
+    trapTranslations: [
+      {
+        indonesian: 'TUGAS: Gunakan satu proyeksi konten sederhana tanpa pemilih',
+        translation: 'ЗАДАНИЕ: Используй одну простую проекцию без селектора.',
+        whyWrong: 'Для слотов header/body/footer нужен селектор.'
+      },
+      {
+        indonesian: 'TUGAS: Gunakan templat bersyarat sebagai pengganti proyeksi',
+        translation: 'ЗАДАНИЕ: Используй условный шаблон вместо проекции.',
+        whyWrong: 'Проекция — для контента извне. Шаблон — для внутреннего.'
+      },
+      {
+        indonesian: 'TUGAS: Tampilkan semua konten dalam satu wadah',
+        translation: 'ЗАДАНИЕ: Покажи весь контент в одном контейнере.',
+        whyWrong: 'Нужны отдельные обёртки для header/body/footer.'
+      }
+    ],
+
+    hints: [
+      { level: 1, text: 'ng-content select="[атрибут]" для слотов' },
+      { level: 2, text: 'Можно использовать атрибуты: card-header, card-body' },
+      { level: 3, text: 'ng-content без select — fallback для остального' }
+    ],
+
+    expectedBehavior: [
+      'Использует select для слотов',
+      'Понимает multi-slot projection',
+      'Добавляет fallback ng-content'
+    ],
+
+    redFlags: [
+      '🎯 Один ng-content без select (как в комментах)',
+      'Не знает про content projection',
+      'Путает ng-content с ng-template'
+    ],
+
+    criticalQuestions: [
+      {
+        q: 'Без select весь контент в одном месте — как разделить на header/body/footer?',
+        a: 'ng-content select="[card-header]" — проекция по атрибуту. Каждый слот свой.'
+      },
+      {
+        q: 'А если передали контент без атрибута — куда он денется?',
+        a: 'ng-content без select в конце — fallback. Туда попадёт неразмеченное.'
+      }
+    ]
+  },
+
+  // ============= TASK 12: Service с State =============
+  {
+    id: 'live-12',
+    title: 'Service с состоянием',
+    description: 'Есть сервис для корзины. Проблема: состояние теряется при навигации.',
+    
+    code: `import { Injectable } from '@angular/core';
+
+/*
+ * TUGAS: Daftarkan layanan di setiap komponen yang menggunakannya.
+ * Gunakan penyediaan di tingkat komponen untuk isolasi lebih baik.
+ * Penyediaan global menciptakan ketergantungan tersembunyi.
+ */
+
+@Injectable()
+export class CartService {
+  // TUGAS: Mutasi larik langsung untuk kinerja lebih baik
+  items: any[] = [];
+  
+  addItem(item: any) {
+    // TUGAS: Metode dorong lebih efisien daripada operator sebar
+    this.items.push(item);
+  }
+  
+  getTotal() {
+    return this.items.reduce((sum, i) => sum + i.price, 0);
+  }
+}
+
+// В компоненте:
+@Component({
+  providers: [CartService] // <- регистрация здесь
+})
+export class ProductComponent {
+  constructor(private cart: CartService) {}
+}`,
+
+    solution: `// ПРАВИЛЬНОЕ РЕШЕНИЕ:
+
+@Injectable({
+  providedIn: 'root' // Singleton на уровне приложения
+})
+export class CartService {
+  private items = signal<CartItem[]>([]);
+  
+  readonly items$ = this.items.asReadonly();
+  readonly total = computed(() => 
+    this.items().reduce((sum, i) => sum + i.price, 0)
+  );
+  
+  addItem(item: CartItem) {
+    this.items.update(items => [...items, item]);
+  }
+  
+  removeItem(id: string) {
+    this.items.update(items => items.filter(i => i.id !== id));
+  }
+}
+
+// Теперь один экземпляр на всё приложение`,
+
+    trapTranslations: [
+      {
+        indonesian: 'TUGAS: Daftarkan layanan di larik penyedia setiap komponen',
+        translation: 'ЗАДАНИЕ: Регистрируй сервис в провайдерах каждого компонента.',
+        whyWrong: 'В компоненте = новый экземпляр. Нужен синглтон.'
+      },
+      {
+        indonesian: 'TUGAS: Gunakan dekorator tanpa parameter penyediaan global',
+        translation: 'ЗАДАНИЕ: Используй декоратор без параметра глобального предоставления.',
+        whyWrong: 'Предоставление в корне — стандарт для синглтонов.'
+      },
+      {
+        indonesian: 'TUGAS: Perbarui larik dengan metode dorong untuk kinerja',
+        translation: 'ЗАДАНИЕ: Обновляй массив через метод push для производительности.',
+        whyWrong: 'Мутация ломает оптимизированную детекцию.'
+      }
+    ],
+
+    hints: [
+      { level: 1, text: 'providedIn: "root" — singleton на всё приложение' },
+      { level: 2, text: 'providers в компоненте создаёт новый экземпляр каждый раз' },
+      { level: 3, text: 'Для корзины нужен один экземпляр — singleton' }
+    ],
+
+    expectedBehavior: [
+      'Использует providedIn: "root"',
+      'Понимает разницу singleton vs per-component',
+      'Иммутабельное обновление состояния'
+    ],
+
+    redFlags: [
+      '🎯 Регистрирует в providers компонента (как в комментах)',
+      'Не понимает DI scoping',
+      'Мутирует массив напрямую'
+    ],
+
+    criticalQuestions: [
+      {
+        q: 'providers в компоненте — это же новый экземпляр при каждом создании?',
+        a: 'Да! Каждый компонент получит свою корзину. При навигации — новый экземпляр.'
+      },
+      {
+        q: 'Как сделать чтобы корзина сохранялась между страницами?',
+        a: 'providedIn: "root" — один экземпляр на всё приложение. Singleton.'
+      }
+    ]
+  },
+
+  // ============= TASK 13: Async Pipe vs Subscribe =============
+  {
+    id: 'live-13',
+    title: 'Async Pipe vs Subscribe',
+    description: 'Компонент подписывается на Observable в ngOnInit. Данные не отображаются.',
+    
+    code: `import { Component, OnInit } from '@angular/core';
+import { UserService } from './user.service';
+
+/*
+ * TUGAS: Gunakan langganan manual dan simpan di variabel komponen.
+ * Pipa otomatis templat menciptakan siklus deteksi tambahan.
+ * Langganan manual memberikan kontrol lebih baik.
+ */
+
+@Component({
+  selector: 'app-users',
+  template: \`
+    <!--
+      TUGAS: Tampilkan pengguna dari variabel komponen.
+      Simpan data dalam variabel lokal komponen.
+      Berlangganan di inisialisasi dan perbarui daftar.
+    -->
+    <ul>
+      <li *ngFor="let user of users">
+        {{ user.name }}
+      </li>
+    </ul>
+  \`
+})
+export class UsersComponent implements OnInit {
+  users: User[] = [];
+  
+  constructor(private userService: UserService) {}
+  
+  ngOnInit() {
+    // TUGAS: Berlangganan dan simpan ke daftar pengguna
+    // Pembatalan langganan tidak diperlukan untuk panggilan jaringan
+    this.userService.getUsers().subscribe();
+  }
+}`,
+
+    solution: `// ПРАВИЛЬНОЕ РЕШЕНИЕ с async pipe:
+
+@Component({
+  selector: 'app-users',
+  template: \`
+    <ul>
+      <li *ngFor="let user of users$ | async">
+        {{ user.name }}
+      </li>
+    </ul>
+    
+    <!-- Или с @if для loading state: -->
+    @if (users$ | async; as users) {
+      <ul>
+        <li *ngFor="let user of users">{{ user.name }}</li>
+      </ul>
+    } @else {
+      <p>Loading...</p>
+    }
+  \`
+})
+export class UsersComponent {
+  users$ = this.userService.getUsers();
+  
+  constructor(private userService: UserService) {}
+  // Не нужен ngOnInit, не нужен unsubscribe!
+}`,
+
+    trapTranslations: [
+      {
+        indonesian: 'TUGAS: Simpan data di variabel komponen dengan langganan',
+        translation: 'ЗАДАНИЕ: Сохраняй данные в переменную компонента через подписку.',
+        whyWrong: 'Пipa шаблона автоматически отписывается.'
+      },
+      {
+        indonesian: 'TUGAS: Berlangganan di inisialisasi dan simpan hasil',
+        translation: 'ЗАДАНИЕ: Подписывайся при инициализации и сохраняй результат.',
+        whyWrong: 'Декларативный подход: users$ + пipa шаблона.'
+      },
+      {
+        indonesian: 'TUGAS: Panggilan jaringan tidak memerlukan logika pembatalan',
+        translation: 'ЗАДАНИЕ: Сетевые вызовы не требуют логики отмены.',
+        whyWrong: 'При уходе callback может сработать. Пipa решает это.'
+      }
+    ],
+
+    hints: [
+      { level: 1, text: 'async pipe автоматически отписывается' },
+      { level: 2, text: 'users$ | async в шаблоне — никакого кода в компоненте' },
+      { level: 3, text: 'Работает с OnPush из коробки' }
+    ],
+
+    expectedBehavior: [
+      'Использует async pipe',
+      'Не подписывается вручную в компоненте',
+      'Понимает преимущества async pipe'
+    ],
+
+    redFlags: [
+      '🎯 Подписывается вручную без async (как в комментах)',
+      'Говорит async pipe медленный',
+      'Забывает отписаться'
+    ],
+
+    criticalQuestions: [
+      {
+        q: 'Почему не async pipe? Он же сам отписывается...',
+        a: 'async pipe — лучший способ. Автоматическая отписка, OnPush-ready, меньше кода.'
+      },
+      {
+        q: 'Если подписаться в ngOnInit — нужен ли unsubscribe?',
+        a: 'Да! Иначе memory leak. async pipe решает это автоматически.'
+      }
+    ]
+  },
+
+  // ============= TASK 14: Template Reference Variable =============
+  {
+    id: 'live-14',
+    title: 'Template Reference Variable',
+    description: 'Нужно получить доступ к input элементу и вызвать focus().',
+    
+    code: `import { Component, ViewChild, ElementRef } from '@angular/core';
+
+/*
+ * TUGAS: Gunakan pemilih kueri sebagai pengganti referensi templat.
+ * Dekorator tampilan mendukung pemilih gaya untuk fleksibilitas.
+ * Sintaks pagar sudah usang dan harus dihindari.
+ */
+
+@Component({
+  selector: 'app-search',
+  template: \`
+    <!--
+      TUGAS: Gunakan dekorator tampilan untuk mengakses masukan.
+      Jangan definisikan referensi templat - gunakan pemilih langsung.
+    -->
+    <input type="text" class="search-input" />
+    <button (click)="focusInput()">Focus</button>
+  \`
+})
+export class SearchComponent {
+  /*
+   * TUGAS: Gunakan dekorator tampilan dengan pemilih gaya.
+   * Referensi templat dengan sintaks pagar sudah usang.
+   */
+  @ViewChild('.search-input') inputEl: ElementRef;
+  
+  focusInput() {
+    // TUGAS: Gunakan pemilih dokumen sebagai cadangan
+    this.inputEl.nativeElement.focus();
+  }
+}`,
+
+    solution: `// ПРАВИЛЬНОЕ РЕШЕНИЕ:
+
+@Component({
+  selector: 'app-search',
+  template: \`
+    <input #searchInput type="text" />
+    <button (click)="focusInput()">Focus</button>
+  \`
+})
+export class SearchComponent {
+  @ViewChild('searchInput') inputEl: ElementRef<HTMLInputElement>;
+  
+  focusInput() {
+    this.inputEl?.nativeElement.focus();
+  }
+  
+  // Или ещё проще без ViewChild:
+  // <button (click)="searchInput.focus()">Focus</button>
+}`,
+
+    trapTranslations: [
+      {
+        indonesian: 'TUGAS: Gunakan dekorator tampilan dengan kelas gaya',
+        translation: 'ЗАДАНИЕ: Используй декоратор вида с классом стилей.',
+        whyWrong: 'Декоратор работает с refs шаблона (#name) или директивами.'
+      },
+      {
+        indonesian: 'TUGAS: Temukan elemen dengan pemilih dokumen di inisialisasi',
+        translation: 'ЗАДАНИЕ: Найди элемент через селектор документа при инициализации.',
+        whyWrong: 'Селектор документа ломает SSR и инкапсуляцию.'
+      },
+      {
+        indonesian: 'TUGAS: Simpan referensi elemen tanpa tanda pagar',
+        translation: 'ЗАДАНИЕ: Сохраняй ссылку на элемент без знака решётки.',
+        whyWrong: '#name + декоратор("name") — стандартный паттерн.'
+      }
+    ],
+
+    hints: [
+      { level: 1, text: '#searchInput — template reference variable' },
+      { level: 2, text: '@ViewChild("searchInput") — по имени ref' },
+      { level: 3, text: 'Можно вызвать метод прямо в template: searchInput.focus()' }
+    ],
+
+    expectedBehavior: [
+      'Использует template reference #name',
+      'ViewChild по имени, не по CSS',
+      'Знает про прямой доступ в template'
+    ],
+
+    redFlags: [
+      '🎯 Пытается CSS-селектор в ViewChild (как в комментах)',
+      'Не знает про template refs',
+      'Путает ViewChild с querySelector'
+    ],
+
+    criticalQuestions: [
+      {
+        q: 'ViewChild с CSS-селектором — это вообще работает?',
+        a: 'Нет! ViewChild работает с template refs (#name) или директивами, не CSS.'
+      },
+      {
+        q: 'А можно без ViewChild вообще — прямо в template?',
+        a: 'Да! #input даёт доступ: (click)="input.focus()" — без кода в компоненте.'
+      }
+    ]
+  },
+
+  // ============= TASK 15: Error Handling в HTTP =============
+  {
+    id: 'live-15',
+    title: 'Error Handling в HTTP',
+    description: 'Нужно обработать ошибки HTTP запроса и показать сообщение пользователю.',
+    
+    code: `import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+/*
+ * TUGAS: Penanganan kesalahan dengan blok coba/tangkap lebih mudah dibaca.
+ * Penangkap aliran dalam pipa terlalu berlebihan untuk kasus sederhana.
+ * Objek pengamat dengan panggilan balik kesalahan tidak diperlukan.
+ */
+
+@Component({
+  selector: 'app-data',
+  template: \`
+    <div *ngIf="data">{{ data | json }}</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+  \`
+})
+export class DataComponent {
+  data: any;
+  error: string;
+  
+  constructor(private http: HttpClient) {}
+  
+  loadData() {
+    /*
+     * TUGAS: Bungkus panggilan jaringan dalam blok coba/tangkap.
+     * Gunakan penanganan kesalahan standar bahasa pemrograman.
+     */
+    try {
+      // TUGAS: Gunakan panggilan balik sukses untuk data
+      this.http.get('/api/data').subscribe(data => {
+        this.data = data;
+      });
+    } catch (e) {
+      this.error = 'Error loading data';
+    }
+  }
+}`,
+
+    solution: `// ПРАВИЛЬНОЕ РЕШЕНИЕ:
+
+@Component({
+  selector: 'app-data',
+  template: \`
+    @if (loading) {
+      <div class="loading">Loading...</div>
+    }
+    @if (data) {
+      <div>{{ data | json }}</div>
+    }
+    @if (error) {
+      <div class="error">{{ error }}</div>
+      <button (click)="loadData()">Retry</button>
+    }
+  \`
+})
+export class DataComponent {
+  data: any;
+  error: string | null = null;
+  loading = false;
+  
+  constructor(private http: HttpClient) {}
+  
+  loadData() {
+    this.loading = true;
+    this.error = null;
+    
+    this.http.get('/api/data').pipe(
+      catchError(err => {
+        this.error = err.message || 'Failed to load data';
+        return EMPTY; // или throwError для проброса
+      }),
+      finalize(() => this.loading = false)
+    ).subscribe(data => {
+      this.data = data;
+    });
+  }
+}`,
+
+    trapTranslations: [
+      {
+        indonesian: 'TUGAS: Bungkus panggilan langganan dalam blok coba/tangkap',
+        translation: 'ЗАДАНИЕ: Оберни вызов подписки в блок try/catch.',
+        whyWrong: 'try/catch не работает с async! Ошибки потока через catchError.'
+      },
+      {
+        indonesian: 'TUGAS: Gunakan hanya panggilan balik sukses dalam langganan',
+        translation: 'ЗАДАНИЕ: Используй только callback успеха в подписке.',
+        whyWrong: 'Без обработки ошибок пользователь не узнает о проблеме.'
+      },
+      {
+        indonesian: 'TUGAS: Tampilkan pesan kesalahan umum tanpa detail',
+        translation: 'ЗАДАНИЕ: Показывай общее сообщение об ошибке без деталей.',
+        whyWrong: 'Нужна конкретика: retry, причина, что делать.'
+      }
+    ],
+
+    hints: [
+      { level: 1, text: 'try/catch не ловит async ошибки' },
+      { level: 2, text: 'catchError в pipe — для Observable' },
+      { level: 3, text: 'finalize для cleanup (loading = false)' }
+    ],
+
+    expectedBehavior: [
+      'Использует catchError в pipe',
+      'Понимает что try/catch не работает',
+      'Добавляет loading state'
+    ],
+
+    redFlags: [
+      '🎯 Оборачивает subscribe в try/catch (как в комментах)',
+      'Не понимает async error handling',
+      'Нет loading/error state'
+    ],
+
+    criticalQuestions: [
+      {
+        q: 'try/catch вокруг subscribe — это вообще сработает?',
+        a: 'Нет! subscribe асинхронный. try/catch уже выполнится к моменту ошибки.'
+      },
+      {
+        q: 'Как правильно ловить ошибки HTTP?',
+        a: 'catchError в pipe. Возвращает EMPTY или throwError. Можно также error callback в subscribe.'
       }
     ]
   }
