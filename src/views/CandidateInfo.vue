@@ -59,15 +59,38 @@
             :class="{ active: store.liveCodingCount === 1 }"
             @click="store.setLiveCodingCount(1)"
           >
-            1 задача
+            1
           </button>
           <button 
             class="lc-btn"
             :class="{ active: store.liveCodingCount === 2 }"
             @click="store.setLiveCodingCount(2)"
           >
-            2 задачи
+            2
           </button>
+          <button 
+            class="lc-btn"
+            :class="{ active: store.liveCodingCount === 3 }"
+            @click="store.setLiveCodingCount(3)"
+          >
+            3
+          </button>
+        </div>
+        
+        <!-- Preview of tasks -->
+        <div class="task-preview">
+          <div class="preview-header">
+            💻 Выпадут задачи:
+          </div>
+          <div class="preview-tasks">
+            <span 
+              v-for="task in previewTasks" 
+              :key="task.id"
+              class="preview-task"
+            >
+              {{ task.title }}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -100,15 +123,55 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useInterviewStore } from '../stores/interview'
+import { livecodingTasks } from '../data/livecoding-tasks'
 
 const router = useRouter()
 const store = useInterviewStore()
 
 const candidateName = ref('')
 const customSeed = ref('')
+
+// Seeded random functions for preview
+function seedToNumber(seedStr) {
+  if (!seedStr) return 12345
+  let hash = 0
+  for (let i = 0; i < seedStr.length; i++) {
+    const char = seedStr.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash
+  }
+  return Math.abs(hash)
+}
+
+function createSeededRandom(seed) {
+  let a = seed
+  return function() {
+    let t = a += 0x6D2B79F5
+    t = Math.imul(t ^ t >>> 15, t | 1)
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61)
+    return ((t ^ t >>> 14) >>> 0) / 4294967296
+  }
+}
+
+function shuffleArraySeeded(array, random) {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
+// Preview of live coding tasks
+const previewTasks = computed(() => {
+  const seed = customSeed.value.trim() || 'PREVIEW'
+  const random = createSeededRandom(seedToNumber(seed) + 1000)
+  const shuffled = shuffleArraySeeded(livecodingTasks, random)
+  return shuffled.slice(0, store.liveCodingCount)
+})
 
 function selectPool(poolId) {
   store.setPool(poolId)
@@ -237,6 +300,37 @@ function startInterview() {
   background: var(--neon-yellow);
   border-color: var(--neon-yellow);
   color: var(--bg-dark);
+}
+
+.task-preview {
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+}
+
+.preview-header {
+  font-family: var(--font-terminal);
+  font-size: 12px;
+  color: var(--neon-pink);
+  margin-bottom: 8px;
+}
+
+.preview-tasks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preview-task {
+  font-family: var(--font-terminal);
+  font-size: 12px;
+  padding: 4px 10px;
+  background: rgba(255, 107, 181, 0.15);
+  border: 1px solid var(--neon-pink);
+  border-radius: 4px;
+  color: var(--text-primary);
 }
 
 .pixel-btn:disabled {

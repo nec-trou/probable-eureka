@@ -13,6 +13,9 @@
       <!-- Header -->
       <div class="header-bar">
         <div class="header-bar__section">
+          <button class="back-btn" @click="goBackToQuestions" title="Вернуться к вопросам">
+            ◀
+          </button>
           <span class="section-icon">💻</span>
           <span class="section-name">LIVE CODING</span>
           <span class="task-counter">
@@ -65,7 +68,7 @@
                   :key="idx"
                   class="trap-item"
                 >
-                  <div class="trap-norwegian">{{ trap.norwegian }}</div>
+                  <div class="trap-indonesian">{{ trap.indonesian }}</div>
                   <div class="trap-translation">
                     <strong>Перевод:</strong> {{ trap.translation }}
                   </div>
@@ -239,38 +242,12 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useInterviewStore } from '../stores/interview'
-import { livecodingTasks } from '../data/livecoding-tasks'
 
 const router = useRouter()
 const store = useInterviewStore()
 
-// Функция для перемешивания с seed (как в store)
-function mulberry32(seed) {
-  return function() {
-    let t = seed += 0x6D2B79F5
-    t = Math.imul(t ^ t >>> 15, t | 1)
-    t ^= t + Math.imul(t ^ t >>> 7, t | 61)
-    return ((t ^ t >>> 14) >>> 0) / 4294967296
-  }
-}
-
-function shuffleWithSeed(array, seed) {
-  const result = [...array]
-  const random = mulberry32(seed)
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(random() * (i + 1))
-    ;[result[i], result[j]] = [result[j], result[i]]
-  }
-  return result
-}
-
-// Берём рандомные задачи на основе seed
-const allTasks = livecodingTasks || []
-const tasks = computed(() => {
-  const seed = store.currentSeed || 12345
-  const shuffled = shuffleWithSeed(allTasks, seed + 1000) // +1000 чтобы отличался от вопросов
-  return shuffled.slice(0, store.liveCodingCount)
-})
+// Берём задачи из store (уже выбраны при старте интервью)
+const tasks = computed(() => store.selectedLiveCodingTasks)
 const currentIndex = ref(0)
 const showSolution = ref(false)
 const rightTab = ref('hints')
@@ -381,6 +358,11 @@ function goToResults() {
   saveCurrentTask()
   router.push('/results')
 }
+
+function goBackToQuestions() {
+  saveCurrentTask()
+  router.push('/interview')
+}
 </script>
 
 <style scoped>
@@ -406,6 +388,23 @@ function goToResults() {
   font-size: 16px;
   color: var(--text-secondary);
   margin-left: 12px;
+}
+
+.back-btn {
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  padding: 6px 10px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+  margin-right: 12px;
+  transition: all 0.15s;
+}
+
+.back-btn:hover {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
 }
 
 /* Split Layout */

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { questionPools, sections } from '../data/questions-angular'
+import { livecodingTasks } from '../data/livecoding-tasks'
 
 export const useInterviewStore = defineStore('interview', () => {
   // State
@@ -12,8 +13,9 @@ export const useInterviewStore = defineStore('interview', () => {
   const currentSectionIndex = ref(0)
   const currentQuestionIndex = ref(0)
   const shuffledQuestions = ref([])
+  const selectedLiveCodingTasks = ref([]) // Выбранные задачи live coding
   const currentSeed = ref('')
-  const liveCodingCount = ref(2) // Количество live coding задач (1-2)
+  const liveCodingCount = ref(2) // Количество live coding задач (1-5)
   const expandNotesDefault = ref(true) // Раскрывать подсказки сразу
   const softSkills = ref({
     communication: 'neutral',
@@ -98,10 +100,36 @@ export const useInterviewStore = defineStore('interview', () => {
     return results
   })
 
+  // Live coding progress
+  const liveCodingProgress = computed(() => {
+    const tasks = selectedLiveCodingTasks.value
+    let correct = 0
+    let partial = 0
+    let wrong = 0
+    
+    tasks.forEach(task => {
+      const answer = answers.value[task.id]
+      if (answer) {
+        if (answer.result === 'correct') correct++
+        else if (answer.result === 'partial') partial++
+        else if (answer.result === 'wrong') wrong++
+      }
+    })
+    
+    const total = tasks.length
+    const answered = correct + partial + wrong
+    const score = total > 0 
+      ? Math.round((correct + partial * 0.5) / total * 100) 
+      : 0
+    
+    return { total, answered, correct, partial, wrong, score }
+  })
+
   const overallScore = computed(() => {
     let totalWeight = 0
     let earnedWeight = 0
     
+    // Обычные вопросы
     shuffledQuestions.value.forEach(q => {
       const answer = answers.value[q.id]
       totalWeight += q.weight
@@ -111,6 +139,21 @@ export const useInterviewStore = defineStore('interview', () => {
           earnedWeight += q.weight
         } else if (answer.result === 'partial') {
           earnedWeight += q.weight * 0.5
+        }
+      }
+    })
+    
+    // Live coding (вес = 3 за каждую задачу)
+    const liveCodingWeight = 3
+    selectedLiveCodingTasks.value.forEach(task => {
+      const answer = answers.value[task.id]
+      totalWeight += liveCodingWeight
+      
+      if (answer) {
+        if (answer.result === 'correct') {
+          earnedWeight += liveCodingWeight
+        } else if (answer.result === 'partial') {
+          earnedWeight += liveCodingWeight * 0.5
         }
       }
     })
@@ -223,6 +266,13 @@ export const useInterviewStore = defineStore('interview', () => {
     candidateName.value = name
   }
 
+  function initializeLiveCodingTasks(seed) {
+    const random = createSeededRandom(seedToNumber(seed) + 1000)
+    const shuffled = shuffleArraySeeded(livecodingTasks, random)
+    selectedLiveCodingTasks.value = shuffled.slice(0, liveCodingCount.value)
+    console.log('Selected live coding tasks:', selectedLiveCodingTasks.value.map(t => t.title))
+  }
+
   function startInterview(customSeed = null) {
     const seed = customSeed || generateSeed()
     currentSeed.value = seed
@@ -232,6 +282,7 @@ export const useInterviewStore = defineStore('interview', () => {
     currentQuestionIndex.value = 0
     showSectionPreamble.value = true
     initializeShuffledQuestions(seed)
+    initializeLiveCodingTasks(seed)
   }
 
   function setAnswer(questionId, result, redFlags = [], comment = '') {
@@ -333,6 +384,46 @@ export const useInterviewStore = defineStore('interview', () => {
       
       parts.push(sectionFeedback)
     })
+
+    // Live Coding feedback
+    if (selectedLiveCodingTasks.value.length > 0) {
+      const lcProgress = liveCodingProgress.value
+      let lcFeedback = `💻 LIVE CODING: ${lcProgress.score}%`
+      
+      if (lcProgress.score >= 70) {
+        lcFeedback += ' — Хорошо решает практические задачи.'
+      } else if (lcProgress.score >= 40) {
+        lcFeedback += ' — Есть базовые навыки, нужна практика.'
+      } else {
+        lcFeedback += ' — Слабые практические навыки.'
+      }
+      
+      const lcDetails = []
+      selectedLiveCodingTasks.value.forEach(task => {
+        const answer = answers.value[task.id]
+        if (!answer) return
+        
+        if (answer.result === 'correct') {
+          lcDetails.push(`  ✓ ${task.title}`)
+        } else if (answer.result === 'partial') {
+          let detail = `  ◐ ${task.title}`
+          if (answer.comment) detail += ` — ${answer.comment}`
+          lcDetails.push(detail)
+        } else if (answer.result === 'wrong') {
+          let detail = `  ✗ ${task.title}`
+          if (answer.redFlags?.length > 0) {
+            detail += ` (${answer.redFlags.slice(0, 2).join('; ')})`
+          }
+          lcDetails.push(detail)
+        }
+      })
+      
+      if (lcDetails.length > 0) {
+        lcFeedback += '\n' + lcDetails.join('\n')
+      }
+      
+      parts.push(lcFeedback)
+    }
 
     // Soft skills
     const softParts = []
@@ -541,6 +632,7 @@ export const useInterviewStore = defineStore('interview', () => {
     currentSectionIndex.value = 0
     currentQuestionIndex.value = 0
     shuffledQuestions.value = []
+    selectedLiveCodingTasks.value = []
     currentSeed.value = ''
     liveCodingCount.value = 2
     softSkills.value = { communication: 'neutral', needsClarification: false }
@@ -564,6 +656,7 @@ export const useInterviewStore = defineStore('interview', () => {
     generatedFeedback,
     showSectionPreamble,
     shuffledQuestions,
+    selectedLiveCodingTasks,
     
     // Getters
     allSections,
@@ -576,6 +669,7 @@ export const useInterviewStore = defineStore('interview', () => {
     currentQuestionNumber,
     sectionProgress,
     overallScore,
+    liveCodingProgress,
     candidateLevel,
     levelLabels,
     poolLabels,

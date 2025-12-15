@@ -70,6 +70,30 @@
               </div>
             </div>
           </div>
+          
+          <!-- Live Coding Section in TOC -->
+          <div 
+            class="toc-section toc-section--livecoding"
+            :class="{ upcoming: !isInterviewComplete }"
+          >
+            <div class="toc-section-header" @click="goToLiveCoding">
+              <span>💻 LIVE CODING</span>
+              <span class="toc-progress">
+                {{ store.liveCodingProgress.answered }}/{{ store.liveCodingProgress.total }}
+              </span>
+            </div>
+            <div class="toc-questions">
+              <div 
+                v-for="(task, tIdx) in store.selectedLiveCodingTasks"
+                :key="task.id"
+                class="toc-question"
+                :class="getLiveCodingStatus(task.id)"
+              >
+                <span class="toc-q-num">{{ tIdx + 1 }}.</span>
+                <span class="toc-q-text">{{ task.title }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -580,6 +604,7 @@ function goNextSection() {
 
 function goToLiveCoding() {
   saveCurrentAnswer()
+  showTOC.value = false
   router.push('/livecoding')
 }
 
@@ -602,6 +627,17 @@ function getQuestionStatus(questionId) {
   if (!answer) return ''
   return answer.result
 }
+
+function getLiveCodingStatus(taskId) {
+  const answer = store.answers[taskId]
+  if (!answer) return ''
+  return answer.result
+}
+
+const isInterviewComplete = computed(() => {
+  return store.currentSectionIndex >= store.allSections.length - 1 && 
+         store.isLastQuestionInSection
+})
 
 function jumpToSection(sectionIndex) {
   saveCurrentAnswer()
@@ -811,6 +847,19 @@ function saveName() {
 
 .toc-section.active {
   border-color: var(--neon-cyan);
+}
+
+.toc-section--livecoding {
+  border-color: var(--neon-pink);
+  margin-top: 12px;
+}
+
+.toc-section--livecoding .toc-section-header {
+  background: rgba(255, 107, 181, 0.1);
+}
+
+.toc-section--livecoding.upcoming {
+  opacity: 0.7;
 }
 
 .toc-section-header {
