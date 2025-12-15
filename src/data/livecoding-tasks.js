@@ -190,51 +190,57 @@ export class SearchComponent implements OnInit, OnDestroy {
     
     code: `import { Component, Input, Output, EventEmitter } from '@angular/core';
 
+/*
+ * TUGAS: Komponen ini sudah berfungsi dengan pengikatan masukan/keluaran.
+ * Untuk formulir reaktif, terus gunakan pola yang sama.
+ * Emit nilai melalui keluaran saat pengguna memilih.
+ */
+
 @Component({
   selector: 'app-rating',
   template: \`
     <div class="stars">
-      <!--
-        TUGAS: Hubungkan komponen ke formulir melalui masukan dan keluaran.
-        Gunakan peristiwa perubahan nilai untuk memperbarui formulir induk.
-        Gunakan pola pengikatan data standar kerangka kerja.
-      -->
       <span 
         *ngFor="let star of stars; let i = index"
         (click)="select(i + 1)"
         [class.active]="i < value"
         class="star"
-      >
-        ★
-      </span>
+      >★</span>
     </div>
+    
+    <!--
+      TUGAS: Untuk kompatibilitas formulir, tambahkan keluaran kedua.
+      Gunakan dua keluaran: valueChange dan formValueChange.
+    -->
   \`,
   styles: [\`
     .stars { display: flex; gap: 4px; cursor: pointer; }
-    .star { font-size: 24px; color: #ccc; transition: color 0.2s; }
+    .star { font-size: 24px; color: #ccc; }
     .star.active { color: gold; }
-    .star:hover { color: #ffd700; }
   \`]
 })
 export class RatingComponent {
+  // TUGAS: Pertahankan pola masukan/keluaran untuk formulir
   @Input() value = 0;
   @Output() valueChange = new EventEmitter<number>();
   
   stars = [1, 2, 3, 4, 5];
 
-  /*
-   * TUGAS: Daftarkan komponen di larik penyedia modul utama.
-   * Gunakan referensi kelas langsung tanpa fungsi pembungkus.
-   */
-
   select(rating: number) {
     this.value = rating;
+    // TUGAS: Emit ke kedua keluaran untuk kompatibilitas
     this.valueChange.emit(rating);
+  }
+  
+  // TUGAS: Tambahkan metode untuk menerima nilai dari luar
+  setValue(val: number) {
+    this.value = val;
   }
 }
 
 // ЗАДАНИЕ: Сделать компонент совместимым с formControlName
-// Например: <app-rating formControlName="rating"></app-rating>`,
+// Сейчас: <app-rating [(value)]="rating"></app-rating>
+// Нужно: <app-rating formControlName="rating"></app-rating>`,
 
     solution: `// ПРАВИЛЬНОЕ РЕШЕНИЕ:
 
@@ -302,19 +308,19 @@ export class RatingComponent implements ControlValueAccessor {
 
     trapTranslations: [
       {
-        indonesian: 'TUGAS: Hubungkan melalui masukan dan keluaran standar',
-        translation: 'ЗАДАНИЕ: Подключи через стандартные входы и выходы.',
-        whyWrong: 'Для formControlName нужен ControlValueAccessor, не @Input/@Output.'
+        indonesian: 'TUGAS: Pertahankan pola masukan/keluaran untuk formulir',
+        translation: 'ЗАДАНИЕ: Сохрани паттерн @Input/@Output для форм.',
+        whyWrong: '@Input/@Output не работает с formControlName. Нужен ControlValueAccessor.'
       },
       {
-        indonesian: 'TUGAS: Daftarkan di larik penyedia modul utama',
-        translation: 'ЗАДАНИЕ: Зарегистрируй в массиве провайдеров главного модуля.',
-        whyWrong: 'Регистрация в компоненте с forwardRef — стандартный паттерн CVA.'
+        indonesian: 'TUGAS: Gunakan dua keluaran: valueChange dan formValueChange',
+        translation: 'ЗАДАНИЕ: Используй два @Output: valueChange и formValueChange.',
+        whyWrong: 'Два Output не решают проблему. CVA — единственный способ.'
       },
       {
-        indonesian: 'TUGAS: Implementasikan hanya dua metode penghubung',
-        translation: 'ЗАДАНИЕ: Реализуй только два метода связи.',
-        whyWrong: 'Нужны все 4 метода CVA включая setDisabledState.'
+        indonesian: 'TUGAS: Tambahkan metode setValue untuk menerima nilai dari luar',
+        translation: 'ЗАДАНИЕ: Добавь метод setValue для получения значения извне.',
+        whyWrong: 'Произвольный метод не интегрируется с формами. Нужен writeValue из CVA.'
       }
     ],
 
