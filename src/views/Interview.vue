@@ -139,12 +139,72 @@
       <div class="page-container" style="padding-top: 0;">
         <!-- Question Card -->
         <div class="question-card">
-          <div class="question-card__main">
-            {{ question.question }}
+          <!-- Main Question with variants -->
+          <div class="question-variants">
+            <div class="variant-tabs" v-if="question.altQuestions?.length">
+              <button 
+                class="variant-tab"
+                :class="{ active: questionVariant === 0 }"
+                @click="questionVariant = 0"
+                title="Основная формулировка"
+              >
+                Q
+              </button>
+              <button 
+                class="variant-tab"
+                :class="{ active: questionVariant === 1 }"
+                @click="questionVariant = 1"
+                title="Альтернатива 1"
+              >
+                А1
+              </button>
+              <button 
+                class="variant-tab"
+                :class="{ active: questionVariant === 2 }"
+                @click="questionVariant = 2"
+                title="Альтернатива 2"
+                v-if="question.altQuestions?.[1]"
+              >
+                А2
+              </button>
+            </div>
+            <div class="question-card__main">
+              {{ currentQuestionText }}
+            </div>
           </div>
           
-          <div v-if="question.followUp" class="question-card__followup">
-            <strong>🔄 Follow-up:</strong> {{ question.followUp }}
+          <!-- Follow-up with variants -->
+          <div v-if="question.followUp" class="question-variants">
+            <div class="variant-tabs" v-if="question.altFollowUps?.length">
+              <button 
+                class="variant-tab variant-tab--small"
+                :class="{ active: followUpVariant === 0 }"
+                @click="followUpVariant = 0"
+                title="Основной follow-up"
+              >
+                F
+              </button>
+              <button 
+                class="variant-tab variant-tab--small"
+                :class="{ active: followUpVariant === 1 }"
+                @click="followUpVariant = 1"
+                title="Альтернатива 1"
+              >
+                1
+              </button>
+              <button 
+                class="variant-tab variant-tab--small"
+                :class="{ active: followUpVariant === 2 }"
+                @click="followUpVariant = 2"
+                title="Альтернатива 2"
+                v-if="question.altFollowUps?.[1]"
+              >
+                2
+              </button>
+            </div>
+            <div class="question-card__followup">
+              <strong>🔄 Follow-up:</strong> {{ currentFollowUpText }}
+            </div>
           </div>
           
           <div class="question-card__expected">
@@ -353,6 +413,8 @@ const showTOC = ref(false)
 const editingName = ref(false)
 const editedName = ref('')
 const nameInput = ref(null)
+const questionVariant = ref(0)  // 0 = main, 1 = alt1, 2 = alt2
+const followUpVariant = ref(0)  // 0 = main, 1 = alt1, 2 = alt2
 
 // Computed
 const showPreamble = computed(() => store.showSectionPreamble)
@@ -367,6 +429,23 @@ const questionsCount = computed(() => store.totalQuestionsInSection)
 const currentAnswer = computed(() => 
   question.value ? store.answers[question.value.id] : null
 )
+
+// Question/FollowUp variant text
+const currentQuestionText = computed(() => {
+  if (!question.value) return ''
+  if (questionVariant.value === 0) return question.value.question
+  if (questionVariant.value === 1) return question.value.altQuestions?.[0] || question.value.question
+  if (questionVariant.value === 2) return question.value.altQuestions?.[1] || question.value.question
+  return question.value.question
+})
+
+const currentFollowUpText = computed(() => {
+  if (!question.value) return ''
+  if (followUpVariant.value === 0) return question.value.followUp
+  if (followUpVariant.value === 1) return question.value.altFollowUps?.[0] || question.value.followUp
+  if (followUpVariant.value === 2) return question.value.altFollowUps?.[1] || question.value.followUp
+  return question.value.followUp
+})
 
 const sectionProgressPercent = computed(() => {
   if (questionsCount.value === 0) return 0
@@ -389,6 +468,9 @@ watch(
   () => question.value?.id,
   () => {
     showNotes.value = store.expandNotesDefault
+    // Reset variants when question changes
+    questionVariant.value = 0
+    followUpVariant.value = 0
     if (currentAnswer.value) {
       selectedRedFlags.value = [...(currentAnswer.value.redFlags || [])]
       comment.value = currentAnswer.value.comment || ''
@@ -930,6 +1012,45 @@ function saveName() {
   font-family: var(--font-pixel);
   font-size: 14px;
   color: var(--neon-cyan);
+}
+
+/* Question Variants */
+.question-variants {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.variant-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.variant-tab {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  padding: 4px 10px;
+  background: var(--bg-dark);
+  border: 2px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.variant-tab:hover {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+.variant-tab.active {
+  background: var(--neon-cyan);
+  border-color: var(--neon-cyan);
+  color: var(--bg-dark);
+}
+
+.variant-tab--small {
+  font-size: 9px;
+  padding: 3px 8px;
 }
 
 /* Question Card */
